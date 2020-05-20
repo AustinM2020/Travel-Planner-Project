@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Travel_Planner.Models
 {
-    public class Activity
+    public class Excursion
     {
         [Key]
         public int Id { get; set; }
@@ -17,8 +17,8 @@ namespace Travel_Planner.Models
         public double? Lat { get; set; }
         public double? Long { get; set; }
 
-        [ForeignKey("Traveler")]
-        public string TravelerId { get; set; }
-        public Traveler Traveler { get; set; }
+        [ForeignKey("Vacation")]
+        public int VacationId { get; set; }
+        public Vacation Vacation { get; set; }
     }
 }

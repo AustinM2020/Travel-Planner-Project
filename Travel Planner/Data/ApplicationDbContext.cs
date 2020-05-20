@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Travel_Planner.Models;
 
 namespace Travel_Planner.Data
 {
@@ -25,5 +26,9 @@ namespace Travel_Planner.Data
                     }
                 );
         }
+        public DbSet<Traveler> Travelers { get; set; }
+        public DbSet<Vacation> Vacations { get; set; }
+        public DbSet<Excursion> Excursions { get; set; }
+        public DbSet<Interest> Interests { get; set; }
     }
 }

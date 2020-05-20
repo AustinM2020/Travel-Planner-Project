@@ -20,7 +20,7 @@ namespace Travel_Planner.Models
         public string State { get; set; }
         [Display(Name = "Zip Code")]
         public int ZipCode { get; set; }
-        public List<string> Interests { get; set; }
+        public List<Interest> Interests { get; set; }
         public double? Lat { get; set; }
         public double? Long { get; set; }
         
