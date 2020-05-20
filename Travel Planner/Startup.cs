@@ -16,6 +16,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Travel_Planner.ActionFilters;
 using Travel_Planner.Contracts;
+using Travel_Planner.Services;
 
 namespace Travel_Planner
 {
@@ -42,6 +43,7 @@ namespace Travel_Planner
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+            services.AddScoped<HotelService>();
 
             services.AddScoped<ClaimsPrincipal>(s =>
             s.GetService<IHttpContextAccessor>().HttpContext.User); 

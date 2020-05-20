@@ -9,24 +9,29 @@ using Microsoft.EntityFrameworkCore;
 using Travel_Planner.Contracts;
 using Travel_Planner.Data;
 using Travel_Planner.Models;
+using Travel_Planner.Services;
 
 namespace Travel_Planner.Controllers
 {
     public class TravelerController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private IRepositoryWrapper _repo;
-        public TravelerController(ApplicationDbContext context, IRepositoryWrapper repo)
+        private readonly IRepositoryWrapper _repo;
+        private readonly HotelService _hotelService;
+        public TravelerController(ApplicationDbContext context, IRepositoryWrapper repo, HotelService hotelService)
         {
             _context = context;
             _repo = repo;
+            _hotelService = hotelService;
         }
 
         // GET: Traveler
         public async Task<IActionResult> Index()
         {
+            Vacation vacation = new Vacation();
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var traveler = await _repo.Traveler.GetTraveler(userId);
+            HotelApi hotel = await _hotelService.GetHotels(vacation);
             return View(traveler);
         }
 

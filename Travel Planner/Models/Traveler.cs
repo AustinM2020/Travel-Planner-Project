@@ -23,6 +23,7 @@ namespace Travel_Planner.Models
         public List<Interest> Interests { get; set; }
         public double? Lat { get; set; }
         public double? Long { get; set; }
+        public List<Vacation> Vacations { get; set; }
         
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }
