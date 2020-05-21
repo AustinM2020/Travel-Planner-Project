@@ -31,7 +31,7 @@ namespace Travel_Planner.Controllers
             Vacation vacation = new Vacation();
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var traveler = await _repo.Traveler.GetTraveler(userId);
-            HotelApi hotel = await _hotelService.GetHotels(vacation);
+            HotelApi hotels = await _hotelService.GetHotels(vacation);
             return View(traveler);
         }
 
