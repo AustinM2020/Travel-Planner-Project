@@ -8,5 +8,6 @@ namespace Travel_Planner
     public static class APIkeys
     {
         public static string hotelApi = "ab9b2e804cmshda818dcce6985c7p17a426jsn6e2de29602dc";
+        public static string googleApi = "AIzaSyAhIJmBTgESLGs0AqVqaTcp-Uz_GIoa9gg";
     }
 }

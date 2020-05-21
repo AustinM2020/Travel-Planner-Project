@@ -10,8 +10,8 @@ using Travel_Planner.Data;
 namespace Travel_Planner.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200521164953_Initial")]
-    partial class Initial
+    [Migration("20200521182735_Initia")]
+    partial class Initia
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,8 +50,8 @@ namespace Travel_Planner.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d2dbed0f-f692-4538-b9c5-0feb0d1ed988",
-                            ConcurrencyStamp = "03b5c849-26d8-47cc-bc9a-361922dbee26",
+                            Id = "59cc382e-bcf7-4e4a-b501-7ebbcb87e19d",
+                            ConcurrencyStamp = "b26efdab-5ce1-4f1b-920b-fe90dab3d282",
                             Name = "Traveler",
                             NormalizedName = "TRAVELER"
                         });
@@ -365,14 +365,14 @@ namespace Travel_Planner.Migrations
                     b.Property<string>("IdentityUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("InterestOneId")
-                        .HasColumnType("int");
+                    b.Property<string>("InterestOne")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("InterestThreeId")
-                        .HasColumnType("int");
+                    b.Property<string>("InterestThree")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("InterestTwoId")
-                        .HasColumnType("int");
+                    b.Property<string>("InterestTwo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
@@ -395,12 +395,6 @@ namespace Travel_Planner.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("IdentityUserId");
-
-                    b.HasIndex("InterestOneId");
-
-                    b.HasIndex("InterestThreeId");
-
-                    b.HasIndex("InterestTwoId");
 
                     b.ToTable("Travelers");
                 });
@@ -510,18 +504,6 @@ namespace Travel_Planner.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
                         .WithMany()
                         .HasForeignKey("IdentityUserId");
-
-                    b.HasOne("Travel_Planner.Models.Interest", "InterestOne")
-                        .WithMany()
-                        .HasForeignKey("InterestOneId");
-
-                    b.HasOne("Travel_Planner.Models.Interest", "InterestThree")
-                        .WithMany()
-                        .HasForeignKey("InterestThreeId");
-
-                    b.HasOne("Travel_Planner.Models.Interest", "InterestTwo")
-                        .WithMany()
-                        .HasForeignKey("InterestTwoId");
                 });
 
             modelBuilder.Entity("Travel_Planner.Models.Vacation", b =>

@@ -28,6 +28,8 @@ namespace Travel_Planner.Data
             builder.Entity<Interest>()
                 .HasData(new Interest { Id = 4, Name = "Local Attractions" });
             builder.Entity<Interest>()
+                .HasData(new Interest { Id = 5, Name = "Local Landmarks" });
+            builder.Entity<Interest>()
                 .HasData(new Interest { Id = 6, Name = "Live Music" });
             builder.Entity<Interest>()
                 .HasData(new Interest { Id = 7, Name = "Nightlife" });

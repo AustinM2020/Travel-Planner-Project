@@ -44,6 +44,7 @@ namespace Travel_Planner
             services.AddRazorPages();
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             services.AddScoped<HotelService>();
+            services.AddScoped<GeocodingService>();
 
             services.AddScoped<ClaimsPrincipal>(s =>
             s.GetService<IHttpContextAccessor>().HttpContext.User); 

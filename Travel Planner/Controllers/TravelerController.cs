@@ -18,11 +18,13 @@ namespace Travel_Planner.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IRepositoryWrapper _repo;
         private readonly HotelService _hotelService;
-        public TravelerController(ApplicationDbContext context, IRepositoryWrapper repo, HotelService hotelService)
+        private readonly GeocodingService _geocodingService;
+        public TravelerController(ApplicationDbContext context, IRepositoryWrapper repo, HotelService hotelService, GeocodingService geocodingService)
         {
             _context = context;
             _repo = repo;
             _hotelService = hotelService;
+            _geocodingService = geocodingService;
         }
         
         
@@ -31,25 +33,23 @@ namespace Travel_Planner.Controllers
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var traveler = await _repo.Traveler.GetTraveler(userId);
-            //var item = traveler.Interests[0];
+            //var item = traveler.InterestOne;
             if(traveler == null)
             {
                 return RedirectToAction("Create");
             }
+            
             //HotelApi hotels = await _hotelService.GetHotels(vacation);
             return View(traveler);
         }
-        public List<SelectListItem> CreateInterestsSelectList()
+        public async Task<IActionResult> SetLatLong(Traveler traveler)
         {
-            List<SelectListItem> items = new List<SelectListItem>();
-            items.Add(new SelectListItem() { Text = "Parks", Value = "Parks" });
-            items.Add(new SelectListItem() { Text = "Art", Value = "Art" });
-            items.Add(new SelectListItem() { Text = "Museums", Value = "Museums" });
-            items.Add(new SelectListItem() { Text = "Local Attractions", Value = "Attractions" });
-            items.Add(new SelectListItem() { Text = "Live Music", Value = "Live Music" });
-            items.Add(new SelectListItem() { Text = "Nightlife", Value = "Nightlife" });
-            items.Add(new SelectListItem() { Text = "Movies", Value = "Movies" });
-            return items;
+            Geocoding geocoding = await _geocodingService.GetGeocodingWaypoints(traveler);
+            traveler.Lat = geocoding.results[0].geometry.location.lat;
+            traveler.Long = geocoding.results[0].geometry.location.lng;
+            _repo.Traveler.EditTraveler(traveler);
+            _repo.Save();
+            return RedirectToAction("Index");
         }
         // GET: Traveler/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -71,7 +71,7 @@ namespace Travel_Planner.Controllers
         // GET: Traveler/Create
         public IActionResult Create()
         {
-            ViewData["Interests"] = new SelectList(_context.Interests, "Id", "Name");
+            ViewData["Interests"] = new SelectList(_context.Interests, "Name", "Name");
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
@@ -89,7 +89,7 @@ namespace Travel_Planner.Controllers
                 traveler.IdentityUserId = userId;
                 _repo.Traveler.CreateTraveler(traveler);
                 _repo.Save();
-                return RedirectToAction(nameof(Index));
+                return await SetLatLong(traveler);
             }
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", traveler.IdentityUserId);
             return View(traveler);
