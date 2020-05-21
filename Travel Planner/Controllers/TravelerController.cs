@@ -24,17 +24,33 @@ namespace Travel_Planner.Controllers
             _repo = repo;
             _hotelService = hotelService;
         }
-
+        
+        
         // GET: Traveler
         public async Task<IActionResult> Index()
         {
-            Vacation vacation = new Vacation();
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var traveler = await _repo.Traveler.GetTraveler(userId);
-            HotelApi hotels = await _hotelService.GetHotels(vacation);
+            //var item = traveler.Interests[0];
+            if(traveler == null)
+            {
+                return RedirectToAction("Create");
+            }
+            //HotelApi hotels = await _hotelService.GetHotels(vacation);
             return View(traveler);
         }
-
+        public List<SelectListItem> CreateInterestsSelectList()
+        {
+            List<SelectListItem> items = new List<SelectListItem>();
+            items.Add(new SelectListItem() { Text = "Parks", Value = "Parks" });
+            items.Add(new SelectListItem() { Text = "Art", Value = "Art" });
+            items.Add(new SelectListItem() { Text = "Museums", Value = "Museums" });
+            items.Add(new SelectListItem() { Text = "Local Attractions", Value = "Attractions" });
+            items.Add(new SelectListItem() { Text = "Live Music", Value = "Live Music" });
+            items.Add(new SelectListItem() { Text = "Nightlife", Value = "Nightlife" });
+            items.Add(new SelectListItem() { Text = "Movies", Value = "Movies" });
+            return items;
+        }
         // GET: Traveler/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -55,6 +71,7 @@ namespace Travel_Planner.Controllers
         // GET: Traveler/Create
         public IActionResult Create()
         {
+            ViewData["Interests"] = new SelectList(_context.Interests, "Id", "Name");
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
@@ -64,10 +81,12 @@ namespace Travel_Planner.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,StreetAddress,City,State,ZipCode,Lat,Long,IdentityUserId")] Traveler traveler)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,StreetAddress,City,State,ZipCode,InterestOne,InterestTwo,InterestThree,Lat,Long,IdentityUserId")] Traveler traveler)
         {
             if (ModelState.IsValid)
             {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                traveler.IdentityUserId = userId;
                 _repo.Traveler.CreateTraveler(traveler);
                 _repo.Save();
                 return RedirectToAction(nameof(Index));

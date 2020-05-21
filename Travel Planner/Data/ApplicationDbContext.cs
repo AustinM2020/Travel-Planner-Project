@@ -18,13 +18,21 @@ namespace Travel_Planner.Data
         {
             base.OnModelCreating(builder);
             builder.Entity<IdentityRole>()
-                .HasData(
-                    new IdentityRole
-                    {
-                        Name = "Traveler",
-                        NormalizedName = "TRAVELER"
-                    }
-                );
+                .HasData(new IdentityRole { Name = "Traveler", NormalizedName = "TRAVELER" });
+            builder.Entity<Interest>()
+                .HasData(new Interest { Id = 1, Name = "Parks" });
+            builder.Entity<Interest>()
+                .HasData(new Interest { Id = 2, Name = "Art" });
+            builder.Entity<Interest>()
+                .HasData(new Interest { Id = 3, Name = "Museums" });
+            builder.Entity<Interest>()
+                .HasData(new Interest { Id = 4, Name = "Local Attractions" });
+            builder.Entity<Interest>()
+                .HasData(new Interest { Id = 6, Name = "Live Music" });
+            builder.Entity<Interest>()
+                .HasData(new Interest { Id = 7, Name = "Nightlife" });
+            builder.Entity<Interest>()
+                .HasData(new Interest { Id = 8, Name = "Movies" });       
         }
         public DbSet<Traveler> Travelers { get; set; }
         public DbSet<Vacation> Vacations { get; set; }

@@ -15,7 +15,7 @@ namespace Travel_Planner.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.1")
+                .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -48,8 +48,8 @@ namespace Travel_Planner.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c5413d32-4163-40e7-b1bd-d8041f3d5c17",
-                            ConcurrencyStamp = "7c873594-54bd-4b22-9343-80717554fda5",
+                            Id = "d2dbed0f-f692-4538-b9c5-0feb0d1ed988",
+                            ConcurrencyStamp = "03b5c849-26d8-47cc-bc9a-361922dbee26",
                             Name = "Traveler",
                             NormalizedName = "TRAVELER"
                         });
@@ -256,6 +256,45 @@ namespace Travel_Planner.Migrations
                     b.ToTable("Excursions");
                 });
 
+            modelBuilder.Entity("Travel_Planner.Models.Hotel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("CheckIn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("CheckOut")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double?>("Lat")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Long")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumberOfAdults")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfChildren")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfRooms")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Rate")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Hotel");
+                });
+
             modelBuilder.Entity("Travel_Planner.Models.Interest", b =>
                 {
                     b.Property<int>("Id")
@@ -266,14 +305,46 @@ namespace Travel_Planner.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TravelerId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("TravelerId");
-
                     b.ToTable("Interests");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Parks"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Art"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Museums"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Local Attractions"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Live Music"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Nightlife"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Movies"
+                        });
                 });
 
             modelBuilder.Entity("Travel_Planner.Models.Traveler", b =>
@@ -291,6 +362,15 @@ namespace Travel_Planner.Migrations
 
                     b.Property<string>("IdentityUserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("InterestOneId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("InterestThreeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("InterestTwoId")
+                        .HasColumnType("int");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
@@ -314,6 +394,12 @@ namespace Travel_Planner.Migrations
 
                     b.HasIndex("IdentityUserId");
 
+                    b.HasIndex("InterestOneId");
+
+                    b.HasIndex("InterestThreeId");
+
+                    b.HasIndex("InterestTwoId");
+
                     b.ToTable("Travelers");
                 });
 
@@ -326,6 +412,9 @@ namespace Travel_Planner.Migrations
 
                     b.Property<string>("Destination")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DestinationId")
+                        .HasColumnType("int");
 
                     b.Property<double?>("Lat")
                         .HasColumnType("float");
@@ -342,9 +431,14 @@ namespace Travel_Planner.Migrations
                     b.Property<DateTime?>("VacationStart")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("hotelId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("TravelerId");
+
+                    b.HasIndex("hotelId");
 
                     b.ToTable("Vacations");
                 });
@@ -409,27 +503,36 @@ namespace Travel_Planner.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Travel_Planner.Models.Interest", b =>
-                {
-                    b.HasOne("Travel_Planner.Models.Traveler", null)
-                        .WithMany("Interests")
-                        .HasForeignKey("TravelerId");
-                });
-
             modelBuilder.Entity("Travel_Planner.Models.Traveler", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
                         .WithMany()
                         .HasForeignKey("IdentityUserId");
+
+                    b.HasOne("Travel_Planner.Models.Interest", "InterestOne")
+                        .WithMany()
+                        .HasForeignKey("InterestOneId");
+
+                    b.HasOne("Travel_Planner.Models.Interest", "InterestThree")
+                        .WithMany()
+                        .HasForeignKey("InterestThreeId");
+
+                    b.HasOne("Travel_Planner.Models.Interest", "InterestTwo")
+                        .WithMany()
+                        .HasForeignKey("InterestTwoId");
                 });
 
             modelBuilder.Entity("Travel_Planner.Models.Vacation", b =>
                 {
                     b.HasOne("Travel_Planner.Models.Traveler", "Traveler")
-                        .WithMany()
+                        .WithMany("Vacations")
                         .HasForeignKey("TravelerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Travel_Planner.Models.Hotel", "hotel")
+                        .WithMany()
+                        .HasForeignKey("hotelId");
                 });
 #pragma warning restore 612, 618
         }

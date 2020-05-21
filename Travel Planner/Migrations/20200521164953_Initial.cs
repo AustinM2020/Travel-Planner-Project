@@ -47,6 +47,40 @@ namespace Travel_Planner.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Hotel",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    Rate = table.Column<double>(nullable: false),
+                    NumberOfAdults = table.Column<int>(nullable: false),
+                    NumberOfChildren = table.Column<int>(nullable: false),
+                    NumberOfRooms = table.Column<int>(nullable: false),
+                    CheckIn = table.Column<DateTime>(nullable: true),
+                    CheckOut = table.Column<DateTime>(nullable: true),
+                    Lat = table.Column<double>(nullable: true),
+                    Long = table.Column<double>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Hotel", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Interests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Interests", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -164,6 +198,9 @@ namespace Travel_Planner.Migrations
                     City = table.Column<string>(nullable: true),
                     State = table.Column<string>(nullable: true),
                     ZipCode = table.Column<int>(nullable: false),
+                    InterestOneId = table.Column<int>(nullable: true),
+                    InterestTwoId = table.Column<int>(nullable: true),
+                    InterestThreeId = table.Column<int>(nullable: true),
                     Lat = table.Column<double>(nullable: true),
                     Long = table.Column<double>(nullable: true),
                     IdentityUserId = table.Column<string>(nullable: true)
@@ -177,24 +214,22 @@ namespace Travel_Planner.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Interests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
-                    TravelerId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Interests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Interests_Travelers_TravelerId",
-                        column: x => x.TravelerId,
-                        principalTable: "Travelers",
+                        name: "FK_Travelers_Interests_InterestOneId",
+                        column: x => x.InterestOneId,
+                        principalTable: "Interests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Travelers_Interests_InterestThreeId",
+                        column: x => x.InterestThreeId,
+                        principalTable: "Interests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Travelers_Interests_InterestTwoId",
+                        column: x => x.InterestTwoId,
+                        principalTable: "Interests",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -206,8 +241,10 @@ namespace Travel_Planner.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Destination = table.Column<string>(nullable: true),
+                    DestinationId = table.Column<int>(nullable: false),
                     VacationStart = table.Column<DateTime>(nullable: true),
                     VacationEnd = table.Column<DateTime>(nullable: true),
+                    hotelId = table.Column<int>(nullable: true),
                     Lat = table.Column<double>(nullable: true),
                     Long = table.Column<double>(nullable: true),
                     TravelerId = table.Column<int>(nullable: false)
@@ -221,6 +258,12 @@ namespace Travel_Planner.Migrations
                         principalTable: "Travelers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Vacations_Hotel_hotelId",
+                        column: x => x.hotelId,
+                        principalTable: "Hotel",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -234,30 +277,37 @@ namespace Travel_Planner.Migrations
                     Date = table.Column<DateTime>(nullable: true),
                     Lat = table.Column<double>(nullable: true),
                     Long = table.Column<double>(nullable: true),
-                    TravelerId = table.Column<int>(nullable: false),
-                    VacationId = table.Column<int>(nullable: true)
+                    VacationId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Excursions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Excursions_Travelers_TravelerId",
-                        column: x => x.TravelerId,
-                        principalTable: "Travelers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Excursions_Vacations_VacationId",
                         column: x => x.VacationId,
                         principalTable: "Vacations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "f7bb9b12-7cdf-4f7f-9dd0-b276a039dc30", "90764d53-edd6-4738-8d5f-ebfa639a77ca", "Traveler", "TRAVELER" });
+                values: new object[] { "d2dbed0f-f692-4538-b9c5-0feb0d1ed988", "03b5c849-26d8-47cc-bc9a-361922dbee26", "Traveler", "TRAVELER" });
+
+            migrationBuilder.InsertData(
+                table: "Interests",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Parks" },
+                    { 2, "Art" },
+                    { 3, "Museums" },
+                    { 4, "Local Attractions" },
+                    { 6, "Live Music" },
+                    { 7, "Nightlife" },
+                    { 8, "Movies" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -299,19 +349,9 @@ namespace Travel_Planner.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Excursions_TravelerId",
-                table: "Excursions",
-                column: "TravelerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Excursions_VacationId",
                 table: "Excursions",
                 column: "VacationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Interests_TravelerId",
-                table: "Interests",
-                column: "TravelerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Travelers_IdentityUserId",
@@ -319,9 +359,29 @@ namespace Travel_Planner.Migrations
                 column: "IdentityUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Travelers_InterestOneId",
+                table: "Travelers",
+                column: "InterestOneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Travelers_InterestThreeId",
+                table: "Travelers",
+                column: "InterestThreeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Travelers_InterestTwoId",
+                table: "Travelers",
+                column: "InterestTwoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Vacations_TravelerId",
                 table: "Vacations",
                 column: "TravelerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vacations_hotelId",
+                table: "Vacations",
+                column: "hotelId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -345,9 +405,6 @@ namespace Travel_Planner.Migrations
                 name: "Excursions");
 
             migrationBuilder.DropTable(
-                name: "Interests");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -357,7 +414,13 @@ namespace Travel_Planner.Migrations
                 name: "Travelers");
 
             migrationBuilder.DropTable(
+                name: "Hotel");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Interests");
         }
     }
 }
