@@ -45,6 +45,9 @@ namespace Travel_Planner
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             services.AddScoped<HotelService>();
             services.AddScoped<GeocodingService>();
+            services.AddScoped<InterestOneService>();
+            services.AddScoped<InterestTwoService>();
+            services.AddScoped<InterestThreeService>();
 
             services.AddScoped<ClaimsPrincipal>(s =>
             s.GetService<IHttpContextAccessor>().HttpContext.User); 

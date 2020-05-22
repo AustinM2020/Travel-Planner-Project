@@ -5,46 +5,26 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    #map {
+        height: 600px;
+        width: 600px;
+    }
+</style>
 <h1>Index</h1>
+<h2>Map</h2>
+<div id="map"></div>
+<script>
+    var map;
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: @Model.Lat, lng: @Model.Long },
+            zoom: 8
+        });
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&callback=initMap"
+        async defer></script>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StreetAddress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.State)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ZipCode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Lat)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Long)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdentityUser)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        </tr>
-}
-    </tbody>
-</table>
+
+
