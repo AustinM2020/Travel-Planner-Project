@@ -32,19 +32,34 @@ namespace Travel_Planner.Controllers
         }
         
         
-        // GET: Traveler
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var traveler = await _repo.Traveler.GetTraveler(userId);
-            //PlaceResults places = await _interestOneService.GetInterestOnePlaces(traveler);
+            PlaceResults places = await _interestOneService.GetInterestOnePlaces(traveler);
             if(traveler == null)
             {
                 return RedirectToAction("Create");
             }
-            
-            //HotelApi hotels = await _hotelService.GetHotels(vacation);
-            return View(traveler);
+            TravelerPlacesViewModel travelerPlaces = new TravelerPlacesViewModel();
+            travelerPlaces.Traveler = traveler;
+            travelerPlaces.PlaceResults = places;
+            return View(travelerPlaces);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(string vacationDestination, DateTime vacationStart, DateTime vacationEnd)
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var traveler = await _repo.Traveler.GetTraveler(userId);
+            Vacation vacation = new Vacation();
+            vacation.Destination = vacationDestination;
+            vacation.TravelerId = traveler.Id;
+            vacation.VacationEnd = vacationEnd;
+            vacation.VacationStart = vacationStart;
+            return RedirectToAction("Create", "Vacations", vacation);
         }
         public async Task<IActionResult> SetLatLong(Traveler traveler)
         {

@@ -5,18 +5,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Travel_Planner.Contracts;
 using Travel_Planner.Data;
 using Travel_Planner.Models;
+using Travel_Planner.Services;
 
 namespace Travel_Planner.Controllers
 {
     public class VacationsController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public VacationsController(ApplicationDbContext context)
+        private readonly IRepositoryWrapper _repo;
+        private readonly DestinationIdService _destinationIdService;
+        public VacationsController(ApplicationDbContext context, IRepositoryWrapper repo, DestinationIdService destinationIdService)
         {
             _context = context;
+            _repo = repo;
+            _destinationIdService = destinationIdService;
         }
 
         // GET: Vacations
@@ -45,28 +50,25 @@ namespace Travel_Planner.Controllers
             return View(vacation);
         }
 
-        // GET: Vacations/Create
-        public IActionResult Create()
-        {
-            ViewData["TravelerId"] = new SelectList(_context.Travelers, "Id", "Id");
-            return View();
-        }
-
-        // POST: Vacations/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Destination,DestinationId,VacationStart,VacationEnd,Lat,Long,TravelerId")] Vacation vacation)
+        public async Task<IActionResult> Create(Vacation vacation)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(vacation);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                DestinationInfo info = await _destinationIdService.GetDestinationId(vacation);
+                for(int i = 0; i < info.suggestions[0].entities.Length; i++)
+                {
+                    if(info.suggestions[0].entities[i].name.ToUpper() == vacation.Destination.ToUpper())
+                    {
+                        vacation.DestinationId = info.suggestions[0].entities[i].destinationId;
+                        break;
+                    }
+                }
+                _repo.Vacation.CreateVacation(vacation);
+                _repo.Save();
+                return RedirectToAction("Index", "Traveler");
             }
             ViewData["TravelerId"] = new SelectList(_context.Travelers, "Id", "Id", vacation.TravelerId);
-            return View(vacation);
+            return RedirectToAction("Index", "Traveler");
         }
 
         // GET: Vacations/Edit/5

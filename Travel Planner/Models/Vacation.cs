@@ -12,7 +12,7 @@ namespace Travel_Planner.Models
         [Key]
         public int Id { get; set; }
         public string Destination { get; set; }
-        public int DestinationId { get; set; }
+        public string DestinationId { get; set; }
         public DateTime? VacationStart { get; set; }
         public DateTime? VacationEnd { get; set; }
         public List<Excursion> Excursions { get; set; }
