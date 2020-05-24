@@ -12,48 +12,51 @@
     }
 </style>
 <h1>My Vacations</h1>
+
 <form id="vacationInput" asp-action="Index" method="post">
     <div>
         <h5>
-            <input name="vacationDestination" placeholder="ex:Tokyo" onchange="myFunction()"/>
-            <input type="datetime-local" name="vacationStart" onchange="myFunction()"/>
-            <input type="datetime-local" name="vacationEnd" onchange="myFunction()"/>
-        </h5>
+            <input id="citySearch" type="text" name="vacationDestination" placeholder="ex:Tokyo" onchange="myFunction()"/>
+            <input type="date" name="vacationStart" onchange="myFunction()"/>
+            <input type="date" name="vacationEnd" onchange="myFunction()"/>
+        </h5> 
         <button type="submit" value="Submit">Submit</button>
     </div>
 </form>
 <h2>Map</h2>
 <div id="map"></div>
 <script>
-    var map;
     var location;
     var placePosition = [];
     var placeTitles = [];
-    @for (int i = 0; i < Model.PlaceResults.results.Length; i++)
+    @*@for (int i = 0; i < Model.PlaceResults.results.Length; i++)
     {
         @:placePosition.push({lat: @Model.PlaceResults.results[i].geometry.location.lat, lng: @Model.PlaceResults.results[i].geometry.location.lng})
         @:placeTitles.push('@Model.PlaceResults.results[i].name')
-    }
+    }*@
     var center = {lat: 40.4168, lng: 3.7038};
-    function initMap() {
-        
-        map = new google.maps.Map(document.getElementById('map'), {
+    function initMap() {      
+        var map = new google.maps.Map(document.getElementById('map'), {
             center: center,
             zoom: 1.5
         });
-        var i;
-        var marker;
-        for (i = 0; i < placeTitles.length; i++) {
-            marker = new google.maps.Marker({
-                position: placePosition[i],
-                title: placeTitles[i],
-                map:map
-            });
+        var options = {
+            types: ['(cities)']
         }
+        var input = document.getElementById('citySearch');
+        var autocomplete = new google.maps.places.Autocomplete(input, options);
+        //var i;
+        //var marker;
+        //for (i = 0; i < placeTitles.length; i++) {
+        //    marker = new google.maps.Marker({
+        //        position: placePosition[i],
+        //        title: placeTitles[i],
+        //        map:map
+        //    });
+        //}
     }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&callback=initMap"
-        async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>
 
 
 

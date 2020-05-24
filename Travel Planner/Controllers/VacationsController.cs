@@ -55,9 +55,10 @@ namespace Travel_Planner.Controllers
             if (ModelState.IsValid)
             {
                 DestinationInfo info = await _destinationIdService.GetDestinationId(vacation);
+                string city = vacation.Destination.Substring(0, vacation.Destination.IndexOf(","));
                 for(int i = 0; i < info.suggestions[0].entities.Length; i++)
                 {
-                    if(info.suggestions[0].entities[i].name.ToUpper() == vacation.Destination.ToUpper())
+                    if (info.suggestions[0].entities[i].name.ToUpper() == city.ToUpper())
                     {
                         vacation.DestinationId = info.suggestions[0].entities[i].destinationId;
                         break;

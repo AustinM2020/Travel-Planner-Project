@@ -37,14 +37,14 @@ namespace Travel_Planner.Controllers
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var traveler = await _repo.Traveler.GetTraveler(userId);
-            PlaceResults places = await _interestOneService.GetInterestOnePlaces(traveler);
+            //PlaceResults places = await _interestOneService.GetInterestOnePlaces(traveler);
             if(traveler == null)
             {
                 return RedirectToAction("Create");
             }
             TravelerPlacesViewModel travelerPlaces = new TravelerPlacesViewModel();
             travelerPlaces.Traveler = traveler;
-            travelerPlaces.PlaceResults = places;
+            //travelerPlaces.PlaceResults = places;
             return View(travelerPlaces);
         }
 
