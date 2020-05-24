@@ -44,18 +44,21 @@ namespace Travel_Planner.Controllers
             }
             TravelerPlacesViewModel travelerPlaces = new TravelerPlacesViewModel();
             travelerPlaces.Traveler = traveler;
+            travelerPlaces.Vacations = await _repo.Vacation.GetVacations(traveler.Id);
             //travelerPlaces.PlaceResults = places;
             return View(travelerPlaces);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string vacationDestination, DateTime vacationStart, DateTime vacationEnd)
+        public async Task<IActionResult> Index(string vacationDestination, double lat, double lng, DateTime vacationStart, DateTime vacationEnd)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var traveler = await _repo.Traveler.GetTraveler(userId);
             Vacation vacation = new Vacation();
             vacation.Destination = vacationDestination;
+            vacation.Lat = lat;
+            vacation.Long = lng;
             vacation.TravelerId = traveler.Id;
             vacation.VacationEnd = vacationEnd;
             vacation.VacationStart = vacationStart;

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Travel_Planner.Migrations
 {
-    public partial class Initia : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -223,7 +223,7 @@ namespace Travel_Planner.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Destination = table.Column<string>(nullable: true),
-                    DestinationId = table.Column<int>(nullable: false),
+                    DestinationId = table.Column<string>(nullable: true),
                     VacationStart = table.Column<DateTime>(nullable: true),
                     VacationEnd = table.Column<DateTime>(nullable: true),
                     hotelId = table.Column<int>(nullable: true),
@@ -275,7 +275,7 @@ namespace Travel_Planner.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "59cc382e-bcf7-4e4a-b501-7ebbcb87e19d", "b26efdab-5ce1-4f1b-920b-fe90dab3d282", "Traveler", "TRAVELER" });
+                values: new object[] { "82c1b515-c9da-4316-adb2-736c25e283ba", "e6555e84-d8a0-446b-916f-88468c8cb5ce", "Traveler", "TRAVELER" });
 
             migrationBuilder.InsertData(
                 table: "Interests",
@@ -286,6 +286,7 @@ namespace Travel_Planner.Migrations
                     { 2, "Art" },
                     { 3, "Museums" },
                     { 4, "Local Attractions" },
+                    { 5, "Local Landmarks" },
                     { 6, "Live Music" },
                     { 7, "Nightlife" },
                     { 8, "Movies" }

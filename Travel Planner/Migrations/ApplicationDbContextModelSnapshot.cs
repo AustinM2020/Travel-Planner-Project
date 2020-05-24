@@ -48,8 +48,8 @@ namespace Travel_Planner.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "59cc382e-bcf7-4e4a-b501-7ebbcb87e19d",
-                            ConcurrencyStamp = "b26efdab-5ce1-4f1b-920b-fe90dab3d282",
+                            Id = "82c1b515-c9da-4316-adb2-736c25e283ba",
+                            ConcurrencyStamp = "e6555e84-d8a0-446b-916f-88468c8cb5ce",
                             Name = "Traveler",
                             NormalizedName = "TRAVELER"
                         });
@@ -332,6 +332,11 @@ namespace Travel_Planner.Migrations
                         },
                         new
                         {
+                            Id = 5,
+                            Name = "Local Landmarks"
+                        },
+                        new
+                        {
                             Id = 6,
                             Name = "Live Music"
                         },
@@ -407,8 +412,8 @@ namespace Travel_Planner.Migrations
                     b.Property<string>("Destination")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DestinationId")
-                        .HasColumnType("int");
+                    b.Property<string>("DestinationId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("Lat")
                         .HasColumnType("float");
