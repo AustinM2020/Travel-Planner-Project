@@ -9,6 +9,8 @@
     #map {
         height: 400px;
         width: 100%;
+        border-radius: 20px;
+        border-style:none;
     }
 </style>
 <h1>My Vacations</h1>
@@ -16,11 +18,11 @@
 <form id="vacationInput" asp-action="Index" method="post">
     <div>
         <h5>
-            <input id="citySearch" type="text" name="vacationDestination" placeholder="ex:Tokyo" onchange="myFunction()"/>
+            <input class="form-control" id="citySearch" type="text" name="vacationDestination" placeholder="ex:Tokyo" onchange="myFunction()"/>
             <input id="cityLat" type="hidden" name="lat" onchange="myFunction()"/>
             <input id="cityLng" type="hidden" name="lng" onchange="myFunction()"/>
-            <input type="date" name="vacationStart" onchange="myFunction()" required/>
-            <input type="date" name="vacationEnd" onchange="myFunction()" required/>
+            <input class="form-control" type="date" name="vacationStart" onchange="myFunction()" required/>
+            <input class="form-control" type="date" name="vacationEnd" onchange="myFunction()" required/>
         </h5> 
         <button type="submit" value="Submit">Submit</button>
     </div>
@@ -37,11 +39,209 @@
         @:vacationPosition.push({lat: @Model.Vacations[i].Lat.Value, lng: @Model.Vacations[i].Long.Value})
         @:vacationTitles.push('@Model.Vacations[i].Destination')
     }
-    var center = {lat: 40.4168, lng: 3.7038};
+    var center = { lat: 40.4168, lng: 3.7038 };
+    var worldBounds = {
+        north: 85,
+        south: -85,
+        west: 200,
+        east: -200,
+      };
     function initMap() {      
         map = new google.maps.Map(document.getElementById('map'), {
             center: center,
-            zoom: 2
+            disableDefaultUI: true,
+            mapTypeId: 'terrain',
+            restriction: {
+            latLngBounds: worldBounds,
+            strictBounds: false,
+            },
+            zoom: 2,
+            minZoom: 2,
+            styles: 
+            [
+              {
+                "elementType": "geometry",
+                "stylers": [
+                  {
+                    "color": "#f5f5f5"
+                  }
+                ]
+              },
+              {
+                "elementType": "labels.icon",
+                "stylers": [
+                  {
+                    "visibility": "off"
+                  }
+                ]
+              },
+              {
+                "elementType": "labels.text.fill",
+                "stylers": [
+                  {
+                    "color": "#616161"
+                  }
+                ]
+              },
+              {
+                "elementType": "labels.text.stroke",
+                "stylers": [
+                  {
+                    "color": "#f5f5f5"
+                  }
+                ]
+              },{
+                "featureType": "administrative.country",
+                "elementType": "geometry.stroke",
+                "stylers": [
+                  { "visibility": "on" }
+                ]
+              },{
+                "featureType": "administrative.province",
+                "elementType": "geometry.stroke",
+                "stylers": [
+                  { "visibility": "on" }
+                ]
+              },{
+                "featureType": "administrative.locality",
+                "elementType": "geometry.stroke",
+                "stylers": [
+                  { "visibility": "on" }
+                ]
+              },{
+                "featureType": "administrative.neighborhood",
+                "elementType": "geometry.stroke",
+                "stylers": [
+                  { "visibility": "on" }
+                ]
+              },{
+                "featureType": "administrative.land_parcel",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                  {
+                    "visibility": "on",
+                    "color": "#bdbdbd"
+                  }
+                ]
+              },
+              {
+                "featureType": "poi",
+                "elementType": "geometry",
+                "stylers": [
+                  {
+                    "color": "#eeeeee"
+                  }
+                ]
+              },
+              {
+                "featureType": "poi",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                  {
+                    "color": "#757575"
+                  }
+                ]
+              },
+              {
+                "featureType": "poi.park",
+                "elementType": "geometry",
+                "stylers": [
+                  {
+                    "color": "#e5e5e5"
+                  }
+                ]
+              },
+              {
+                "featureType": "poi.park",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                  {
+                    "color": "#9e9e9e"
+                  }
+                ]
+              },
+              {
+                "featureType": "road",
+                "elementType": "geometry",
+                "stylers": [
+                  {
+                    "color": "#ffffff"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.arterial",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                  {
+                    "color": "#757575"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.highway",
+                "elementType": "geometry",
+                "stylers": [
+                  {
+                    "color": "#dadada"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.highway",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                  {
+                    "color": "#616161"
+                  }
+                ]
+              },
+              {
+                "featureType": "road.local",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                  {
+                    "color": "#9e9e9e"
+                  }
+                ]
+              },
+              {
+                "featureType": "transit.line",
+                "elementType": "geometry",
+                "stylers": [
+                  {
+                    "color": "#e5e5e5"
+                  }
+                ]
+              },
+              {
+                "featureType": "transit.station",
+                "elementType": "geometry",
+                "stylers": [
+                  {
+                    "color": "#eeeeee"
+                  }
+                ]
+              },
+              {
+                "featureType": "water",
+                "elementType": "geometry",
+                "stylers": [
+                  {
+                    "color": "#c9c9c9"
+                  }
+                ]
+              },
+              {
+                "featureType": "water",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                  {
+                    "color": "#9e9e9e"
+                  }
+                ]
+              }
+            ]
         });
         var i;
         var marker;
