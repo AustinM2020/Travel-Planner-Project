@@ -19,8 +19,8 @@
             <input id="citySearch" type="text" name="vacationDestination" placeholder="ex:Tokyo" onchange="myFunction()"/>
             <input id="cityLat" type="hidden" name="lat" onchange="myFunction()"/>
             <input id="cityLng" type="hidden" name="lng" onchange="myFunction()"/>
-            <input type="date" name="vacationStart" onchange="myFunction()"/>
-            <input type="date" name="vacationEnd" onchange="myFunction()"/>
+            <input type="date" name="vacationStart" onchange="myFunction()" required/>
+            <input type="date" name="vacationEnd" onchange="myFunction()" required/>
         </h5> 
         <button type="submit" value="Submit">Submit</button>
     </div>
@@ -28,31 +28,21 @@
 <h2>Map</h2>
 <div id="map"></div>
 <script>
+    var map;
     var location;
     var vacationPosition = [];
     var vacationTitles = [];
     @for (int i = 0; i < Model.Vacations.Count; i++)
     {
-        @:placePosition.push({lat: @Model.Vacations[i].Lat, lng: @Model.Vacations[i].Long})
-        @:placeTitles.push('@Model.Vacations[i].Destination')
+        @:vacationPosition.push({lat: @Model.Vacations[i].Lat.Value, lng: @Model.Vacations[i].Long.Value})
+        @:vacationTitles.push('@Model.Vacations[i].Destination')
     }
     var center = {lat: 40.4168, lng: 3.7038};
     function initMap() {      
-        var map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('map'), {
             center: center,
-            zoom: 1.5
+            zoom: 2
         });
-        var options = {
-            types: ['(cities)']
-        }
-        var input = document.getElementById('citySearch');
-        var autocomplete = new google.maps.places.Autocomplete(input, options);
-        google.maps.event.addListener(autocomplete, 'place_changed', function () {
-            var place = autocomplete.getPlace();
-            document.getElementById('cityLat').value = place.geometry.location.lat();
-            document.getElementById('cityLng').value = place.geometry.location.lng();
-        })
-        debugger
         var i;
         var marker;
         for (i = 0; i < vacationTitles.length; i++) {
@@ -62,6 +52,16 @@
                 map:map
             });
         }
+        var options = {
+            types: ['(cities)']
+        }
+        var input = document.getElementById('citySearch');
+        var autocomplete = new google.maps.places.Autocomplete(input, options);
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var place = autocomplete.getPlace();
+            document.getElementById('cityLat').value = place.geometry.location.lat();
+            document.getElementById('cityLng').value = place.geometry.location.lng();
+        })       
     }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>
