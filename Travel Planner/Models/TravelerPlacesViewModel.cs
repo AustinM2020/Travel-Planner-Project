@@ -7,7 +7,10 @@ namespace Travel_Planner.Models
 {
     public class TravelerPlacesViewModel
     {
-        public PlaceResults PlaceResults { get; set; }
+        public PlaceResults PlacesOne { get; set; } 
+        public PlaceResults PlacesTwo { get; set; }
+        public PlaceResults PlacesThree { get; set; }
+        public Vacation Vacation { get; set; }
         public List<Vacation> Vacations { get; set; }
         public Traveler Traveler { get; set; }
     }

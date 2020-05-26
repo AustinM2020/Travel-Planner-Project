@@ -10,7 +10,7 @@ namespace Travel_Planner.Services
 {
     public class InterestOneService
     {
-        public async Task<PlaceResults> GetInterestOnePlaces(Traveler traveler)
+        public async Task<PlaceResults> GetInterestOnePlaces(Traveler traveler, Vacation vacation)
         {
             string str;
             if(traveler.InterestOne != "Live Music")
@@ -24,7 +24,7 @@ namespace Travel_Planner.Services
                 str = traveler.InterestOne;
             }
             HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync($"https://maps.googleapis.com/maps/api/place/textsearch/json?query={str.ToLower()}+in+Milwaukee&key={APIkeys.googleApi}");
+            HttpResponseMessage response = await client.GetAsync($"https://maps.googleapis.com/maps/api/place/textsearch/json?query={str.ToLower()}+in+{vacation.Destination}&key={APIkeys.googleApi}");
             if (response.IsSuccessStatusCode)
             {
                 string json = response.Content.ReadAsStringAsync().Result;

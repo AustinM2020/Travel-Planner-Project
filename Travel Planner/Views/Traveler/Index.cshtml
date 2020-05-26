@@ -8,7 +8,7 @@
 <style>
     #map {
         position:relative;
-        height: 400px;
+        height: 450px;
         width: 100%;
         border-radius: 20px;
         border-style: none;
@@ -69,7 +69,6 @@
 <div id="map"></div>
 <script>
     var map;
-    var location;
     var vacationPosition = [];
     var vacationTitles = [];
     var vacationIds = [];
@@ -111,7 +110,7 @@
                 "elementType": "labels.icon",
                 "stylers": [
                   {
-                    "visibility": "off"
+                    "visibility": "on"
                   }
                 ]
               },
@@ -134,25 +133,37 @@
                 "featureType": "administrative.country",
                 "elementType": "geometry.stroke",
                 "stylers": [
-                  { "visibility": "on" }
+                    {
+                        "visibility": "on",
+                        "color": "#000000"
+                    }
                 ]
               },{
                 "featureType": "administrative.province",
                 "elementType": "geometry.stroke",
                 "stylers": [
-                  { "visibility": "on" }
+                    {
+                        "visibility": "on",
+                        "color": "#000000",
+                    }
                 ]
               },{
                 "featureType": "administrative.locality",
                 "elementType": "geometry.stroke",
                 "stylers": [
-                  { "visibility": "on" }
+                    {
+                        "visibility": "on",
+                        "color": "#616161"
+                    }
                 ]
               },{
                 "featureType": "administrative.neighborhood",
                 "elementType": "geometry.stroke",
                 "stylers": [
-                  { "visibility": "on" }
+                    {
+                        "visibility": "on",
+                        "color": "#616161"
+                    }
                 ]
               },{
                 "featureType": "administrative.land_parcel",
@@ -160,7 +171,7 @@
                 "stylers": [
                   {
                     "visibility": "on",
-                    "color": "#bdbdbd"
+                    "color": "#616161"
                   }
                 ]
               },
@@ -283,8 +294,16 @@
               }
             ]
         });
-        var i;
-        
+        var markerA
+        markerA = new google.maps.Marker({
+            position: { lat: @Model.Traveler.Lat.Value, lng: @Model.Traveler.Long.Value},
+            title: 'Home',
+            icon: {
+                url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+            },
+            map:map
+        })
+        var i;  
         var marker;
         for (i = 0; i < vacationTitles.length; i++) {
             var permalink = "https://localhost:44350/Vacations/Index?Id=" + vacationIds[i] + "";
@@ -292,6 +311,9 @@
                 position: vacationPosition[i],
                 title: vacationTitles[i],
                 url: permalink,
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                },
                 map:map
             });
             (function(permalink) {

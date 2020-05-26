@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -17,18 +18,32 @@ namespace Travel_Planner.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IRepositoryWrapper _repo;
         private readonly DestinationIdService _destinationIdService;
-        public VacationsController(ApplicationDbContext context, IRepositoryWrapper repo, DestinationIdService destinationIdService)
+        private readonly InterestOneService _interestOneService;
+        private readonly InterestTwoService _interestTwoService;
+        private readonly InterestThreeService _interestThreeService;
+        public VacationsController(ApplicationDbContext context, IRepositoryWrapper repo, DestinationIdService destinationIdService, InterestOneService interestOneService, InterestTwoService interestTwoService, InterestThreeService interestThreeService)
         {
             _context = context;
             _repo = repo;
             _destinationIdService = destinationIdService;
+            _interestOneService = interestOneService;
+            _interestTwoService = interestTwoService;
+            _interestThreeService = interestThreeService;
         }
 
         // GET: Vacations
         public async Task<IActionResult> Index(int Id)
         {
+            TravelerPlacesViewModel travelerPlaces = new TravelerPlacesViewModel();
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var traveler = await _repo.Traveler.GetTraveler(userId);
             var vacation = await _repo.Vacation.GetVacation(Id);
-            return View(vacation);
+            travelerPlaces.PlacesOne = await _interestOneService.GetInterestOnePlaces(traveler, vacation);
+            travelerPlaces.PlacesTwo = await _interestTwoService.GetInterestTwoPlaces(vacation, traveler);
+            travelerPlaces.PlacesThree = await _interestThreeService.GetInterestThreePlaces(vacation, traveler);
+            travelerPlaces.Vacation = vacation;
+            travelerPlaces.Traveler = traveler;
+            return View(travelerPlaces);
         }
 
         // GET: Vacations/Details/5

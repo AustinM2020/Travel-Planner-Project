@@ -19,16 +19,12 @@ namespace Travel_Planner.Controllers
         private readonly IRepositoryWrapper _repo;
         private readonly HotelService _hotelService;
         private readonly GeocodingService _geocodingService;
-        private readonly InterestOneService _interestOneService;
-        private readonly InterestTwoService _interestTwoService;
-        private readonly InterestThreeService _interestThreeService;
-        public TravelerController(ApplicationDbContext context, IRepositoryWrapper repo, HotelService hotelService, GeocodingService geocodingService, InterestOneService interestOneService)
+        public TravelerController(ApplicationDbContext context, IRepositoryWrapper repo, HotelService hotelService, GeocodingService geocodingService)
         {
             _context = context;
             _repo = repo;
             _hotelService = hotelService;
             _geocodingService = geocodingService;
-            _interestOneService = interestOneService;
         }
         
         
@@ -37,15 +33,13 @@ namespace Travel_Planner.Controllers
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var traveler = await _repo.Traveler.GetTraveler(userId);
-            //PlaceResults places = await _interestOneService.GetInterestOnePlaces(traveler);
-            if(traveler == null)
+            if (traveler == null)
             {
                 return RedirectToAction("Create");
             }
             TravelerPlacesViewModel travelerPlaces = new TravelerPlacesViewModel();
             travelerPlaces.Traveler = traveler;
             travelerPlaces.Vacations = await _repo.Vacation.GetVacations(traveler.Id);
-            //travelerPlaces.PlaceResults = places;
             return View(travelerPlaces);
         }
 

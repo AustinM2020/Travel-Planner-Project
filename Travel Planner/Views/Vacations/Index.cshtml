@@ -1,70 +1,300 @@
-﻿@model Travel_Planner.Models.Vacation
+﻿@model Travel_Planner.Models.TravelerPlacesViewModel
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Destination)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DestinationId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VacationStart)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VacationEnd)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Lat)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Long)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Traveler)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => Model.Destination)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => Model.DestinationId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => Model.VacationStart.Value)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => Model.VacationEnd.Value)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => Model.Lat)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => Model.Long)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => Model.Traveler.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@Model.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<style>
+    #map {
+        height: 300px;
+        width: 60%;
+        border-radius: 20px;
+        border-style: none;
+    }
+</style>
+<h1>@Model.Vacation.Destination</h1>
+<button onclick="addMakerA()">@Model.Traveler.InterestOne</button>
+<button onclick="addMarkerB()">@Model.Traveler.InterestTwo</button>
+<button onclick="addMarkerC()">@Model.Traveler.InterestThree</button>
+<div id="map"></div>
+<script>
+    var placesOneLocations = [];
+    var placesTwoLocations = [];
+    var placesThreeLocations = [];
+    var placesOneTitles = [];
+    var placesTwoTitles = [];
+    var placesThreeTitles = [];
+    @for(int i = 0; i < Model.PlacesOne.results.Length; i++)
+    {
+        @:placesOneLocations.push({ lat: @Model.PlacesOne.results[i].geometry.location.lat, lng: @Model.PlacesOne.results[i].geometry.location.lng});
+        @:placesOneTitles.push('@Model.PlacesOne.results[i].name');
+    }
+    @for(int i = 0; i < Model.PlacesTwo.results.Length; i++)
+    {
+        @:placesTwoLocations.push({ lat: @Model.PlacesTwo.results[i].geometry.location.lat, lng: @Model.PlacesTwo.results[i].geometry.location.lng});
+        @:placesTwoTitles.push('@Model.PlacesTwo.results[i].name');
+    }
+    @for(int i = 0; i < Model.PlacesThree.results.Length; i++)
+    {
+        @:placesThreeLocations.push({ lat: @Model.PlacesThree.results[i].geometry.location.lat, lng: @Model.PlacesThree.results[i].geometry.location.lng});
+        @:placesThreeTitles.push('@Model.PlacesThree.results[i].name');
+    }
+    var map;
+    var center = { lat: @Model.Vacation.Lat.Value, lng: @Model.Vacation.Long.Value };
+    var worldBounds = {
+        north: 85,
+        south: -85,
+        west: 200,
+        east: -200,
+    };
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: center,
+            disableDefaultUI: true,
+            mapTypeId: 'terrain',
+            restriction: {
+                latLngBounds: worldBounds,
+                strictBounds: false,
+            },
+            zoom: 7,
+            minZoom: 2,
+            styles:
+                [
+                    {
+                        "elementType": "geometry",
+                        "stylers": [
+                            {
+                                "color": "#f5f5f5"
+                            }
+                        ]
+                    },
+                    {
+                        "elementType": "labels.icon",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            }
+                        ]
+                    },
+                    {
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "color": "#616161"
+                            }
+                        ]
+                    },
+                    {
+                        "elementType": "labels.text.stroke",
+                        "stylers": [
+                            {
+                                "color": "#f5f5f5"
+                            }
+                        ]
+                    }, {
+                        "featureType": "administrative.country",
+                        "elementType": "geometry.stroke",
+                        "stylers": [
+                            {
+                                "visibility": "on",
+                                "color": "#000000"
+                            }
+                        ]
+                    }, {
+                        "featureType": "administrative.province",
+                        "elementType": "geometry.stroke",
+                        "stylers": [
+                            {
+                                "visibility": "on",
+                                "color": "#000000",
+                            }
+                        ]
+                    }, {
+                        "featureType": "administrative.locality",
+                        "elementType": "geometry.stroke",
+                        "stylers": [
+                            {
+                                "visibility": "on",
+                                "color": "#616161"
+                            }
+                        ]
+                    }, {
+                        "featureType": "administrative.neighborhood",
+                        "elementType": "geometry.stroke",
+                        "stylers": [
+                            {
+                                "visibility": "on",
+                                "color": "#616161"
+                            }
+                        ]
+                    }, {
+                        "featureType": "administrative.land_parcel",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "visibility": "on",
+                                "color": "#616161"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "poi",
+                        "elementType": "geometry",
+                        "stylers": [
+                            {
+                                "color": "#eeeeee"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "poi",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "color": "#757575"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "poi.park",
+                        "elementType": "geometry",
+                        "stylers": [
+                            {
+                                "color": "#e5e5e5"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "poi.park",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "color": "#9e9e9e"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "geometry",
+                        "stylers": [
+                            {
+                                "color": "#ffffff"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road.arterial",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "color": "#757575"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road.highway",
+                        "elementType": "geometry",
+                        "stylers": [
+                            {
+                                "color": "#dadada"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road.highway",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "color": "#616161"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road.local",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "color": "#9e9e9e"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "transit.line",
+                        "elementType": "geometry",
+                        "stylers": [
+                            {
+                                "color": "#e5e5e5"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "transit.station",
+                        "elementType": "geometry",
+                        "stylers": [
+                            {
+                                "color": "#eeeeee"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "geometry",
+                        "stylers": [
+                            {
+                                "color": "#c9c9c9"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "color": "#9e9e9e"
+                            }
+                        ]
+                    }
+                ]
+        });
+    }
+    function addMakerA() {
+        var i
+        for (i = 0; i < placesOneTitles.length; i++) {
+            var marker = new google.maps.Marker({
+                position: placesOneLocations[i],
+                title: placesOneTitles[i],
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                },
+                map: map
+            });
+        }
+    }
+    function addMarkerB() {
+        var i
+        for (i = 0; i < placesTwoTitles.length; i++) {
+            var marker = new google.maps.Marker({
+                position: placesTwoLocations[i],
+                title: placesTwoTitles[i],
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                },
+                map: map
+            });
+        }
+    }
+    function addMarkerC(){
+        var i
+        for (i = 0; i < placesThreeTitles.length; i++) {
+            var marker = new google.maps.Marker({
+                position: placesThreeLocations[i],
+                title: placesThreeTitles[i],
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
+                },
+                map: map
+            });
+        }
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>
