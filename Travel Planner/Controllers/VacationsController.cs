@@ -25,10 +25,10 @@ namespace Travel_Planner.Controllers
         }
 
         // GET: Vacations
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int Id)
         {
-            var applicationDbContext = _context.Vacations.Include(v => v.Traveler);
-            return View(await applicationDbContext.ToListAsync());
+            var vacation = await _repo.Vacation.GetVacation(Id);
+            return View(vacation);
         }
 
         // GET: Vacations/Details/5

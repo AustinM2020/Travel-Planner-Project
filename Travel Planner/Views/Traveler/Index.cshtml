@@ -7,37 +7,77 @@
 
 <style>
     #map {
+        position:relative;
         height: 400px;
         width: 100%;
         border-radius: 20px;
-        border-style:none;
+        border-style: none;
+        top: 30px;
+    }
+    #citySearch {
+        width: 200px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+    #vacationEnd {
+        width: 200px;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+    #vacationStart {
+        width: 200px;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+    input {
+        display:inline;
+        float: left;
+    }
+    #yourVacations {
+        position: relative;
+        right: 648px;
+        top:25px;
+        margin-bottom: 10px;
+    }
+    #add {
+        margin-top: 10px;
     }
 </style>
-<h1>My Vacations</h1>
+<h1 id="add">Add New Vacation</h1>
 
 <form id="vacationInput" asp-action="Index" method="post">
     <div>
         <h5>
-            <input class="form-control" id="citySearch" type="text" name="vacationDestination" placeholder="ex:Tokyo" onchange="myFunction()"/>
-            <input id="cityLat" type="hidden" name="lat" onchange="myFunction()"/>
-            <input id="cityLng" type="hidden" name="lng" onchange="myFunction()"/>
-            <input class="form-control" type="date" name="vacationStart" onchange="myFunction()" required/>
-            <input class="form-control" type="date" name="vacationEnd" onchange="myFunction()" required/>
+            <span>
+                <input class="form-control" id="citySearch" type="text" name="vacationDestination" placeholder="ex:Tokyo" onchange="myFunction()" required/>
+                <input id="cityLat" type="hidden" name="lat" onchange="myFunction()" />
+                <input id="cityLng" type="hidden" name="lng" onchange="myFunction()" />
+                <input class="form-control" type="date" id="vacationStart" name="vacationStart" onchange="myFunction()" required />
+                <input class="form-control" type="date" id="vacationEnd" name="vacationEnd" onchange="myFunction()" required />
+            </span>
         </h5> 
-        <button type="submit" value="Submit">Submit</button>
+        <button type="submit" value="Submit">Add</button><br />
     </div>
 </form>
-<h2>Map</h2>
+<h2 id="yourVacations">Your Vacations</h2>
 <div id="map"></div>
 <script>
     var map;
     var location;
     var vacationPosition = [];
     var vacationTitles = [];
+    var vacationIds = [];
     @for (int i = 0; i < Model.Vacations.Count; i++)
     {
-        @:vacationPosition.push({lat: @Model.Vacations[i].Lat.Value, lng: @Model.Vacations[i].Long.Value})
-        @:vacationTitles.push('@Model.Vacations[i].Destination')
+        @:vacationPosition.push({ lat: @Model.Vacations[i].Lat.Value, lng: @Model.Vacations[i].Long.Value});
+        @:vacationTitles.push('@Model.Vacations[i].Destination');
+        @:vacationIds.push(@Model.Vacations[i].Id);
     }
     var center = { lat: 40.4168, lng: 3.7038 };
     var worldBounds = {
@@ -244,14 +284,21 @@
             ]
         });
         var i;
+        
         var marker;
         for (i = 0; i < vacationTitles.length; i++) {
+            var permalink = "https://localhost:44350/Vacations/Index?Id=" + vacationIds[i] + "";
             marker = new google.maps.Marker({
                 position: vacationPosition[i],
                 title: vacationTitles[i],
+                url: permalink,
                 map:map
             });
+            (function(permalink) {
+            google.maps.event.addListener(marker, 'click', function() {self.location.href = permalink;});
+            })(permalink);    
         }
+        
         var options = {
             types: ['(cities)']
         }
