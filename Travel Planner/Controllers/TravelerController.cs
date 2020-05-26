@@ -17,13 +17,12 @@ namespace Travel_Planner.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IRepositoryWrapper _repo;
-        private readonly HotelService _hotelService;
+        
         private readonly GeocodingService _geocodingService;
-        public TravelerController(ApplicationDbContext context, IRepositoryWrapper repo, HotelService hotelService, GeocodingService geocodingService)
+        public TravelerController(ApplicationDbContext context, IRepositoryWrapper repo, GeocodingService geocodingService)
         {
             _context = context;
             _repo = repo;
-            _hotelService = hotelService;
             _geocodingService = geocodingService;
         }
         

@@ -7,16 +7,108 @@
 <style>
     #map {
         height: 300px;
-        width: 60%;
+        width: 100%;
         border-radius: 20px;
         border-style: none;
     }
+
+    #markersA {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-right: 5px;
+        background-color: lightgreen;
+        border-color: none;
+    }
+
+    #markersB {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+
+    #markersC {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+
+    #Destination {
+        margin-top: 10px;
+    }
+
+    #checkIn {
+        position: relative;
+        width: 190px;
+        top: 20px;
+        margin-right: 5px;
+    }
+
+    #checkOut {
+        position: relative;
+        width: 190px;
+        top: 20px;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+
+    #adults {
+        position: relative;
+        width: 60px;
+        top: 20px;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+
+    #childs {
+        position: relative;
+        width: 60px;
+        top: 20px;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+
+    input {
+        display: inline;
+        float: left;
+    }
+    label{
+        display: inline;
+        float: left;
+    }
+
 </style>
-<h1>@Model.Vacation.Destination</h1>
-<button onclick="addMakersA()">@Model.Traveler.InterestOne</button>
-<button onclick="addMarkersB()">@Model.Traveler.InterestTwo</button>
-<button onclick="addMarkersC()">@Model.Traveler.InterestThree</button>
-<div id="map"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 id="Destination">@Model.Vacation.Destination</h1>
+        </div>
+        <div class="col-md-5">
+            <button class="btn btn" id="markersA" onclick="addMakersA()">@Model.Traveler.InterestOne</button>
+            <button class="btn btn-info" id="markersB" onclick="addMarkersB()">@Model.Traveler.InterestTwo</button>
+            <button class="btn btn-secondary" id="markersC" onclick="addMarkersC()">@Model.Traveler.InterestThree</button>
+            <div id="map"></div>
+        </div>
+        <div class="col-md-7">
+            <form id="hotelInput" asp-action="Index" method="post">
+                <div>
+                    <h5>
+                        <label style=" position: relative; top: 20px;" for="checkIn">Check-In</label>
+                        <input class="form-control" id="checkIn" type="date" />
+                        <label style="position:relative; top: 20px;" for="checkOut">Check-Out</label>
+                        <input class="form-control" id="checkOut" type="date" />
+                        <label style="position:relative; top: 20px;" for="adults">Adults</label>
+                        <input class="form-control" id="adults" type="number" />
+                        <label style="position:relative; top: 20px;" for="childs">Children</label>
+                        <input class="form-control" id="childs" type="number" />
+                    </h5>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     var placesOneLocations = [];
     var placesTwoLocations = [];
@@ -56,7 +148,7 @@
                 latLngBounds: worldBounds,
                 strictBounds: false,
             },
-            zoom: 9,
+            zoom: 11,
             minZoom: 2,
             styles:
                 [
@@ -267,6 +359,7 @@
                 var marker = new google.maps.Marker({
                     position: placesOneLocations[i],
                     title: placesOneTitles[i],
+                    animation: google.maps.Animation.DROP,
                     icon: {
                         url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
                     }
@@ -297,6 +390,7 @@
                 var marker = new google.maps.Marker({
                     position: placesTwoLocations[i],
                     title: placesTwoTitles[i],
+                    animation: google.maps.Animation.DROP,
                     icon: {
                         url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
                     }
@@ -327,6 +421,7 @@
                 var marker = new google.maps.Marker({
                     position: placesThreeLocations[i],
                     title: placesThreeTitles[i],
+                    animation: google.maps.Animation.DROP,
                     icon: {
                         url: "http://maps.google.com/mapfiles/ms/icons/pink-dot.png"
                     }

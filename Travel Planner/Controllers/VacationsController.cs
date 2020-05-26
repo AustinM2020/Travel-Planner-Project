@@ -21,7 +21,8 @@ namespace Travel_Planner.Controllers
         private readonly InterestOneService _interestOneService;
         private readonly InterestTwoService _interestTwoService;
         private readonly InterestThreeService _interestThreeService;
-        public VacationsController(ApplicationDbContext context, IRepositoryWrapper repo, DestinationIdService destinationIdService, InterestOneService interestOneService, InterestTwoService interestTwoService, InterestThreeService interestThreeService)
+        private readonly HotelService _hotelService;
+        public VacationsController(ApplicationDbContext context, IRepositoryWrapper repo, DestinationIdService destinationIdService, InterestOneService interestOneService, InterestTwoService interestTwoService, InterestThreeService interestThreeService, HotelService hotelService)
         {
             _context = context;
             _repo = repo;
@@ -29,6 +30,7 @@ namespace Travel_Planner.Controllers
             _interestOneService = interestOneService;
             _interestTwoService = interestTwoService;
             _interestThreeService = interestThreeService;
+            _hotelService = hotelService;
         }
 
         // GET: Vacations
