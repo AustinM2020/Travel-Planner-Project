@@ -192,6 +192,7 @@ namespace Travel_Planner.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    VacationId = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     StreetAddress = table.Column<string>(nullable: true),
@@ -275,7 +276,7 @@ namespace Travel_Planner.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "82c1b515-c9da-4316-adb2-736c25e283ba", "e6555e84-d8a0-446b-916f-88468c8cb5ce", "Traveler", "TRAVELER" });
+                values: new object[] { "56dbaf15-b8bb-4213-91da-3282348932e1", "e42de064-3049-4ce0-b402-99ad546a1684", "Traveler", "TRAVELER" });
 
             migrationBuilder.InsertData(
                 table: "Interests",

@@ -49,6 +49,7 @@ namespace Travel_Planner
             services.AddScoped<InterestTwoService>();
             services.AddScoped<InterestThreeService>();
             services.AddScoped<DestinationIdService>();
+            services.AddScoped<AirportService>();
 
             services.AddScoped<ClaimsPrincipal>(s =>
             s.GetService<IHttpContextAccessor>().HttpContext.User); 

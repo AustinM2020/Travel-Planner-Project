@@ -39,45 +39,66 @@
     }
 
     #checkIn {
-        position: relative;
         width: 190px;
-        top: 20px;
+        margin-top: 10px;
         margin-right: 5px;
+        margin-left: 5px;
     }
 
     #checkOut {
-        position: relative;
         width: 190px;
-        top: 20px;
+        margin-top: 10px;
         margin-right: 5px;
         margin-left: 5px;
     }
 
     #adults {
-        position: relative;
-        width: 60px;
-        top: 20px;
+        width: 100px;
+        margin-top: 10px;
         margin-right: 5px;
         margin-left: 5px;
     }
 
     #childs {
-        position: relative;
-        width: 60px;
-        top: 20px;
+        width: 100px;
+        margin-top: 10px;
         margin-right: 5px;
         margin-left: 5px;
     }
 
-    input {
-        display: inline;
-        float: left;
+    #rooms {
+        width: 100px;
+        margin-top: 10px;
+        margin-right: 5px;
+        margin-left: 5px;
     }
-    label{
-        display: inline;
+    #destination{
+        width: 200px;
+        margin-top: 10px;
+        margin-right: 5px;
+    }
+    #origin{
+        width: 200px;
+        margin-top: 10px;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+    input {
+        display: inline-block;
         float: left;
     }
 
+    label {
+        display: inline-block;
+        float: left;
+    }
+
+    #searchHotels {
+        margin-top: 10px;
+    }
+    #searchFlights{
+        margin-top: 10px;
+    }
 </style>
 <div class="container">
     <div class="row">
@@ -90,26 +111,43 @@
             <button class="btn btn-secondary" id="markersC" onclick="addMarkersC()">@Model.Traveler.InterestThree</button>
             <div id="map"></div>
         </div>
-        <div class="col-md-7">
-            <form id="hotelInput" asp-action="Index" method="post">
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form id="hotelInput" asp-action="GetHotels" method="get">
                 <div>
                     <h5>
-                        <label style=" position: relative; top: 20px;" for="checkIn">Check-In</label>
-                        <input class="form-control" id="checkIn" type="date" />
-                        <label style="position:relative; top: 20px;" for="checkOut">Check-Out</label>
-                        <input class="form-control" id="checkOut" type="date" />
-                        <label style="position:relative; top: 20px;" for="adults">Adults</label>
-                        <input class="form-control" id="adults" type="number" />
-                        <label style="position:relative; top: 20px;" for="childs">Children</label>
-                        <input class="form-control" id="childs" type="number" />
+                        <input type="hidden" />
+                        <label style="margin-top: 20px;" for="checkIn">Check-In: </label>
+                        <input class="form-control" id="checkIn" name="checkIn" type="date"/>
+                        <label style="margin-top: 20px;" for="checkOut">Check-Out: </label>
+                        <input class="form-control" id="checkOut"  name="checkOut" type="date" />
+                        <input class="form-control" id="adults" type="number" name="adults" placeholder="Adults" min="1" max="9"/>
+                        <input class="form-control" id="childs" type="number" name="childs" placeholder="Children" min="1" max="9"/>
+                        <input class="form-control" id="rooms" type="number" name="rooms" placeholder="Rooms" min="1" max="9"/>
+                        <button type="submit" id="searchHotels" class="btn btn-warning">Search Hotels</button>
                     </h5>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<script>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="GetFlights" method="get">
+                <h5>
+                    <input class="form-control" type="text" name="destination" id="destination" placeholder="Departure Airport"/>
+                    <input class="form-control" type="text" name="origin" id="origin" placeholder="Arrival Airport"/>
+                    <button type="submit" id="searchFlights" class="btn btn-warning">Search Flights</button>
+                </h5>
+            </form>
+        </div>
+    </div>
+</div>
+        <script>
     var placesOneLocations = [];
     var placesTwoLocations = [];
     var placesThreeLocations = [];
@@ -445,5 +483,5 @@
             markersC[k].setMap(map);
         }
     }
-</script>
-<script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>

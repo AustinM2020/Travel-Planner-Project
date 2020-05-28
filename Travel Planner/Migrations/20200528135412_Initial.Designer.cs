@@ -10,7 +10,7 @@ using Travel_Planner.Data;
 namespace Travel_Planner.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200524171944_Initial")]
+    [Migration("20200528135412_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,8 +50,8 @@ namespace Travel_Planner.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "82c1b515-c9da-4316-adb2-736c25e283ba",
-                            ConcurrencyStamp = "e6555e84-d8a0-446b-916f-88468c8cb5ce",
+                            Id = "56dbaf15-b8bb-4213-91da-3282348932e1",
+                            ConcurrencyStamp = "e42de064-3049-4ce0-b402-99ad546a1684",
                             Name = "Traveler",
                             NormalizedName = "TRAVELER"
                         });
@@ -393,6 +393,9 @@ namespace Travel_Planner.Migrations
 
                     b.Property<string>("StreetAddress")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VacationId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ZipCode")
                         .HasColumnType("int");
