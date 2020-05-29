@@ -116,21 +116,19 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <form id="hotelInput" asp-action="Index" method="post">
-                <div>
+            <form id="searchHotels" onsubmit="getHotels();return false">
                     <h5>
-                        <input type="hidden" value="@Model.Vacation.DestinationId" name="destinationId" />
+                        <input id="destinationId" type="hidden" value="@Model.Vacation.DestinationId"/>
                         <label style="margin-top: 20px;" for="checkIn">Check-In: </label>
                         <input class="form-control" id="checkIn" name="checkIn" type="date"/>
                         <label style="margin-top: 20px;" for="checkOut">Check-Out: </label>
                         <input class="form-control" id="checkOut"  name="checkOut" type="date" />
-                        <input class="form-control" id="adults" type="number" name="adults" placeholder="Adults" min="1" max="9"/>
-                        <input class="form-control" id="childs" type="number" name="childs" placeholder="Children" min="1" max="9"/>
+                        <input class="form-control" id="adults" type="number" placeholder="Adults" min="1" max="9"/>
+                        <input class="form-control" id="childs" type="number"  placeholder="Children" min="1" max="9"/>
                         <input class="form-control" id="rooms" type="number" name="rooms" placeholder="Rooms" min="1" max="9"/>
-                        <button type="submit" id="searchHotels" class="btn btn-warning">Search Hotels</button>
+                        <button type="submit" class="btn btn-warning">Search Hotels</button>
                     </h5>
-                </div>
-            </form>
+            </form>    
         </div>
     </div>
 </div>
@@ -142,7 +140,6 @@
         </div>
     </div>
 </div>
-
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -178,7 +175,7 @@
         @:placesThreeLocations.push({ lat: @Model.PlacesThree.results[i].geometry.location.lat, lng: @Model.PlacesThree.results[i].geometry.location.lng});
         @:placesThreeTitles.push('@Model.PlacesThree.results[i].name');
     }
-    var hotelNames = [];
+    @*var hotelNames = [];
     var hotelRate = [];
     var hotelRating = [];
     @if(Model.Hotels != null)
@@ -198,7 +195,7 @@
                 @:hotelRating.push('@Model.Hotels.data.body.searchResults.results[i].guestReviews.rating');
             }
         }
-    }
+    }*@
     var map;
     var center = { lat: @Model.Vacation.Lat.Value, lng: @Model.Vacation.Long.Value };
     var worldBounds = {
@@ -513,13 +510,35 @@
             markersC[k].setMap(map);
         }
     }
+    var hotels;
+    function getHotels() {
+        var destinationId = document.getElementById('destinationId').value;
+        var checkIn = document.getElementById('checkIn').value;
+        var checkOut = document.getElementById('checkOut').value;
+        var adults = document.getElementById('adults').value;
+        var childs = document.getElementById('childs').value;
+        var rooms = document.getElementById('rooms').value;
+        var settings = {
+	        "async": true,
+	        "crossDomain": true,
+	        "url": `https://hotels4.p.rapidapi.com/properties/list?currency=USD&locale=en_US&sortOrder=PRICE&destinationId=${destinationId}&pageNumber=1&checkIn=${checkIn}&checkOut=${checkOut}&pageSize=25&adults1=${adults}&children1=${childs}`,
+	        "method": "GET",
+	        "headers": {
+		        "x-rapidapi-host": "hotels4.p.rapidapi.com",
+		        "x-rapidapi-key": "@APIkeys.hotelApi"
+	        }
+        }
+
+        $.ajax(settings).done(function (response) {
+            console.log(response);
+            hotels = response;
+        });
+    }
     var counter = 0;
     function displayHotel() {
-        if (counter < hotelNames.length) {
-            document.getElementById('hotel').innerHTML = hotelNames[counter];
-            counter++;
-        }
+        document.getElementById('hotel').innerHTML = hotels.data.body.searchResults.results[counter].name;
+        counter++;
     }
-    window.onload = displayHotel;
+    
 </script>
         <script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>
