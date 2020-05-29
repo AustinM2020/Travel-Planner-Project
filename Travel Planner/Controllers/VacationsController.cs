@@ -35,16 +35,14 @@ namespace Travel_Planner.Controllers
             _airportService = airportService;
         }
 
-        // GET: Vacations
-        public async Task<IActionResult> Index(int Id, AirportApi destinationAirports)
+        public async Task<IActionResult> Index(int? Id, TravelerPlacesViewModel travelerPlaces)
         {
-            TravelerPlacesViewModel travelerPlaces = new TravelerPlacesViewModel();
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var traveler = await _repo.Traveler.GetTraveler(userId);
             Vacation vacation = new Vacation();
-            if(Id > 0)
+            if(Id != null && Id.Value > 0)
             {
-                traveler.VacationId = Id;
+                traveler.VacationId = Id.Value;
                 _repo.Traveler.EditTraveler(traveler);
                 _repo.Save();
             }
@@ -54,18 +52,10 @@ namespace Travel_Planner.Controllers
             travelerPlaces.PlacesThree = await _interestThreeService.GetInterestThreePlaces(vacation, traveler);
             travelerPlaces.Traveler = traveler;
             travelerPlaces.Vacation = vacation;
-            travelerPlaces.destinationAirports = destinationAirports;
             return View(travelerPlaces);
         }
         [HttpPost]
-        public async Task<IActionResult> Index(, string destination)
-        {
-            
-            AirportApi destinationAirports = await _airportService.GetAirports(destination);
-            //AirportApi originAirports = await _airportService.GetAirports(state);
-            return await Index(0, destinationAirports);
-        }
-        public async Task<IActionResult> GetHotels(DateTime checkIn, DateTime checkOut, int adults, int childs, int rooms)
+        public async Task<IActionResult> Index(string destinationId, DateTime checkIn, DateTime checkOut, int adults, int childs, int rooms)
         {
             Hotel hotel = new Hotel();
             hotel.CheckIn = checkIn;
@@ -73,8 +63,16 @@ namespace Travel_Planner.Controllers
             hotel.NumberOfAdults = adults;
             hotel.NumberOfChildren = childs;
             hotel.NumberOfRooms = rooms;
-
+            HotelApi hotelApi = await _hotelService.GetHotels(destinationId, hotel);
+            TravelerPlacesViewModel travelerPlaces = new TravelerPlacesViewModel();
+            travelerPlaces.Hotels = hotelApi;
+            return await Index(0, travelerPlaces);
         }
+        //public async Task<IActionResult> GetHotels()
+        //{
+            
+        //    return await Index(hotelApi);
+        //}
         public string GetState(string state)
         {
             switch (state)

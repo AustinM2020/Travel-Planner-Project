@@ -116,10 +116,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <form id="hotelInput" asp-action="GetHotels" method="get">
+            <form id="hotelInput" asp-action="Index" method="post">
                 <div>
                     <h5>
-                        <input type="hidden" />
+                        <input type="hidden" value="@Model.Vacation.DestinationId" name="destinationId" />
                         <label style="margin-top: 20px;" for="checkIn">Check-In: </label>
                         <input class="form-control" id="checkIn" name="checkIn" type="date"/>
                         <label style="margin-top: 20px;" for="checkOut">Check-Out: </label>
@@ -137,6 +137,15 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
+            <button onclick="displayHotel()">push</button>
+            <h5 id="hotel"></h5>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
             <form asp-action="GetFlights" method="get">
                 <h5>
                     <input class="form-control" type="text" name="destination" id="destination" placeholder="Departure Airport"/>
@@ -147,7 +156,7 @@
         </div>
     </div>
 </div>
-        <script>
+<script>
     var placesOneLocations = [];
     var placesTwoLocations = [];
     var placesThreeLocations = [];
@@ -168,6 +177,27 @@
     {
         @:placesThreeLocations.push({ lat: @Model.PlacesThree.results[i].geometry.location.lat, lng: @Model.PlacesThree.results[i].geometry.location.lng});
         @:placesThreeTitles.push('@Model.PlacesThree.results[i].name');
+    }
+    var hotelNames = [];
+    var hotelRate = [];
+    var hotelRating = [];
+    @if(Model.Hotels != null)
+    {
+        for(int i = 0; i < Model.Hotels.data.body.searchResults.results.Length; i++)
+        {
+            if(Model.Hotels.data.body.searchResults.results[i].name != null)
+            {
+                @:hotelNames.push('@Model.Hotels.data.body.searchResults.results[i].name');
+            }
+            if(Model.Hotels.data.body.searchResults.results[i].ratePlan.price.current != null)
+            {
+                @:hotelRate.push('@Model.Hotels.data.body.searchResults.results[i].ratePlan.price.current');
+            }
+            if(Model.Hotels.data.body.searchResults.results[i].guestReviews != null)
+            {
+                @:hotelRating.push('@Model.Hotels.data.body.searchResults.results[i].guestReviews.rating');
+            }
+        }
     }
     var map;
     var center = { lat: @Model.Vacation.Lat.Value, lng: @Model.Vacation.Long.Value };
@@ -483,5 +513,13 @@
             markersC[k].setMap(map);
         }
     }
-        </script>
+    var counter = 0;
+    function displayHotel() {
+        if (counter < hotelNames.length) {
+            document.getElementById('hotel').innerHTML = hotelNames[counter];
+            counter++;
+        }
+    }
+    window.onload = displayHotel;
+</script>
         <script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>
