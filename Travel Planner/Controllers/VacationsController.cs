@@ -279,15 +279,7 @@ namespace Travel_Planner.Controllers
             if (ModelState.IsValid)
             {
                 DestinationInfo info = await _destinationIdService.GetDestinationId(vacation);
-                string city = vacation.Destination.Substring(0, vacation.Destination.IndexOf(","));
-                for (int i = 0; i < info.suggestions[0].entities.Length; i++)
-                {
-                    if (info.suggestions[0].entities[i].name.ToUpper() == city.ToUpper())
-                    {
-                        vacation.DestinationId = info.suggestions[0].entities[i].destinationId;
-                        break;
-                    }
-                }
+                vacation.DestinationId = info.data[0].result_object.location_id;
                 _repo.Vacation.CreateVacation(vacation);
                 _repo.Save();
                 return RedirectToAction("Index", "Traveler");

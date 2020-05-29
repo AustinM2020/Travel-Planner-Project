@@ -45,12 +45,6 @@
         margin-left: 5px;
     }
 
-    #checkOut {
-        width: 190px;
-        margin-top: 10px;
-        margin-right: 5px;
-        margin-left: 5px;
-    }
 
     #adults {
         width: 100px;
@@ -59,7 +53,7 @@
         margin-left: 5px;
     }
 
-    #childs {
+    #nights {
         width: 100px;
         margin-top: 10px;
         margin-right: 5px;
@@ -117,16 +111,15 @@
     <div class="row">
         <div class="col-md-12">
             <form id="searchHotels" onsubmit="getHotels();return false">
+                <h3>Search Hotel</h3>
                     <h5>
                         <input id="destinationId" type="hidden" value="@Model.Vacation.DestinationId"/>
                         <label style="margin-top: 20px;" for="checkIn">Check-In: </label>
                         <input class="form-control" id="checkIn" name="checkIn" type="date"/>
-                        <label style="margin-top: 20px;" for="checkOut">Check-Out: </label>
-                        <input class="form-control" id="checkOut"  name="checkOut" type="date" />
+                        <input class="form-control" id="nights"  name="nights"  placeholder="Nights" type="number" min="1" max="9" />
                         <input class="form-control" id="adults" type="number" placeholder="Adults" min="1" max="9"/>
-                        <input class="form-control" id="childs" type="number"  placeholder="Children" min="1" max="9"/>
                         <input class="form-control" id="rooms" type="number" name="rooms" placeholder="Rooms" min="1" max="9"/>
-                        <button type="submit" class="btn btn-warning">Search Hotels</button>
+                        <button style="margin-top: 10px;" type="submit" class="btn btn-warning">Search</button>
                     </h5>
             </form>    
         </div>
@@ -134,9 +127,19 @@
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-md-12">
-            <button onclick="displayHotel()">push</button>
-            <h5 id="hotel"></h5>
+        <div class="col-md-1">
+            <button id="next" style="margin-top: 125px; display:none;" class="btn btn-info" onclick="displayHotelBack()">Prev</button>
+        </div>
+        <div class="col-md-5">
+            <img style="width: 100%; height:250px; border-radius:10px; display:none;" alt="No Photo Found" id="hotelImg"/>
+        </div>
+        <div class="col-md-5">
+            <h1 id="hotelName"></h1>
+            <h3 id="hotelRating"></h3>
+            <h3 id="hotelPrice"></h3>
+        </div>
+        <div class="col-md-1">
+            <button id="prev" style="margin-top: 125px; display:none;" class="btn btn-info" onclick="displayHotelForward()">Next</button>
         </div>
     </div>
 </div>
@@ -175,27 +178,6 @@
         @:placesThreeLocations.push({ lat: @Model.PlacesThree.results[i].geometry.location.lat, lng: @Model.PlacesThree.results[i].geometry.location.lng});
         @:placesThreeTitles.push('@Model.PlacesThree.results[i].name');
     }
-    @*var hotelNames = [];
-    var hotelRate = [];
-    var hotelRating = [];
-    @if(Model.Hotels != null)
-    {
-        for(int i = 0; i < Model.Hotels.data.body.searchResults.results.Length; i++)
-        {
-            if(Model.Hotels.data.body.searchResults.results[i].name != null)
-            {
-                @:hotelNames.push('@Model.Hotels.data.body.searchResults.results[i].name');
-            }
-            if(Model.Hotels.data.body.searchResults.results[i].ratePlan.price.current != null)
-            {
-                @:hotelRate.push('@Model.Hotels.data.body.searchResults.results[i].ratePlan.price.current');
-            }
-            if(Model.Hotels.data.body.searchResults.results[i].guestReviews != null)
-            {
-                @:hotelRating.push('@Model.Hotels.data.body.searchResults.results[i].guestReviews.rating');
-            }
-        }
-    }*@
     var map;
     var center = { lat: @Model.Vacation.Lat.Value, lng: @Model.Vacation.Long.Value };
     var worldBounds = {
@@ -510,21 +492,21 @@
             markersC[k].setMap(map);
         }
     }
-    var hotels;
+    var hotels = [];
+    var counter = -1;
     function getHotels() {
         var destinationId = document.getElementById('destinationId').value;
         var checkIn = document.getElementById('checkIn').value;
-        var checkOut = document.getElementById('checkOut').value;
+        var nights = document.getElementById('nights').value;
         var adults = document.getElementById('adults').value;
-        var childs = document.getElementById('childs').value;
         var rooms = document.getElementById('rooms').value;
         var settings = {
 	        "async": true,
 	        "crossDomain": true,
-	        "url": `https://hotels4.p.rapidapi.com/properties/list?currency=USD&locale=en_US&sortOrder=PRICE&destinationId=${destinationId}&pageNumber=1&checkIn=${checkIn}&checkOut=${checkOut}&pageSize=25&adults1=${adults}&children1=${childs}`,
+	        "url": `https://tripadvisor1.p.rapidapi.com/hotels/list?offset=0&currency=USD&limit=30&order=asc&lang=en_US&sort=recommended&location_id=${destinationId}&adults=${adults}&checkin=${checkIn}&rooms=${rooms}&nights=${nights}`,
 	        "method": "GET",
 	        "headers": {
-		        "x-rapidapi-host": "hotels4.p.rapidapi.com",
+		        "x-rapidapi-host": "tripadvisor1.p.rapidapi.com",
 		        "x-rapidapi-key": "@APIkeys.hotelApi"
 	        }
         }
@@ -533,11 +515,53 @@
             console.log(response);
             hotels = response;
         });
+        counter = -1;
+        document.getElementById('prev').style.display = 'block';
+        document.getElementById('next').style.display = 'block';
+        document.getElementById('hotelImg').style.display = 'block';
+        displayHotelForward();
     }
-    var counter = 0;
-    function displayHotel() {
-        document.getElementById('hotel').innerHTML = hotels.data.body.searchResults.results[counter].name;
-        counter++;
+    
+    function displayHotelForward() {
+        if (hotels.data != null) {
+            if (counter < hotels.data.length) {
+                counter++;
+                if (hotels.data[counter].name != null) {
+                    document.getElementById('hotelName').innerHTML = hotels.data[counter].name;
+                }
+                if (hotels.data[counter].rating != null) {
+                    document.getElementById('hotelRating').innerHTML = `Rating: ${hotels.data[counter].rating}/5`;
+                }
+                if (hotels.data[counter].price != null) {
+                    document.getElementById('hotelPrice').innerHTML = `Price: ${hotels.data[counter].price}`;
+                }
+                if (hotels.data[counter].photo != null) {
+                    document.getElementById('hotelImg').src = hotels.data[counter].photo.images.medium.url;
+                }
+            }
+        }
+        else {
+            setTimeout(function() { displayHotelForward(); }, 10);
+        }
+    }
+    function displayHotelBack() {
+        if (hotels.data != null ) {
+            if (counter != 0) {
+                counter --;
+                if (hotels.data[counter].name != null) {
+                    document.getElementById('hotelName').innerHTML = hotels.data[counter].name;
+                }
+                if (hotels.data[counter].rating != null) {
+                    document.getElementById('hotelRating').innerHTML = `Rating: ${hotels.data[counter].rating}/5`;
+                }
+                if (hotels.data[counter].price != null) {
+                    document.getElementById('hotelPrice').innerHTML = `Price: ${hotels.data[counter].price}`;
+                }
+                if (hotels.data[counter].photo != null) {
+                    document.getElementById('hotelImg').src = hotels.data[counter].photo.images.medium.url;
+                }
+            }
+        }
     }
     
 </script>
