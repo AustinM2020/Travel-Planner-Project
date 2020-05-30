@@ -11,6 +11,7 @@ namespace Travel_Planner.Contracts
         IVacationRepository Vacation { get; }
         IExcursionRepository Excursion { get; }
         IInterestRepository Interest { get; }
+        IHotelRepository Hotel { get; }
         void Save();
     }
 }

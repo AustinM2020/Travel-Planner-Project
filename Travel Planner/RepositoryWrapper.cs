@@ -14,6 +14,7 @@ namespace Travel_Planner
         private IVacationRepository _vacation;
         private IExcursionRepository _excursion;
         private IInterestRepository _interest;
+        private IHotelRepository _hotelRepository;
         public ITravelerRepository Traveler
         {
             get
@@ -56,6 +57,17 @@ namespace Travel_Planner
                     _interest = new InterestRepository(_context);
                 }
                 return _interest;
+            }
+        }
+        public IHotelRepository Hotel
+        {
+            get
+            {
+                if(_hotelRepository == null)
+                {
+                    _hotelRepository = new HotelRepository(_context);
+                }
+                return _hotelRepository;
             }
         }
         public RepositoryWrapper(ApplicationDbContext context)

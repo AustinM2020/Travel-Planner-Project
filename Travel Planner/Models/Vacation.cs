@@ -16,7 +16,6 @@ namespace Travel_Planner.Models
         public DateTime? VacationStart { get; set; }
         public DateTime? VacationEnd { get; set; }
         public List<Excursion> Excursions { get; set; }
-        public Hotel hotel { get; set; }
         public double? Lat { get; set; }
         public double? Long { get; set; }
 

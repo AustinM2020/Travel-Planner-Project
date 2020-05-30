@@ -43,7 +43,6 @@ namespace Travel_Planner
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
-            services.AddScoped<HotelService>();
             services.AddScoped<GeocodingService>();
             services.AddScoped<InterestOneService>();
             services.AddScoped<InterestTwoService>();

@@ -40,5 +40,6 @@ namespace Travel_Planner.Data
         public DbSet<Vacation> Vacations { get; set; }
         public DbSet<Excursion> Excursions { get; set; }
         public DbSet<Interest> Interests { get; set; }
+        public DbSet<Hotel> Hotels { get; set; }
     }
 }

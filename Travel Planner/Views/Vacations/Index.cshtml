@@ -137,12 +137,31 @@
             <h1 id="hotelName"></h1>
             <h3 id="hotelRating"></h3>
             <h3 id="hotelPrice"></h3>
+            <form asp-action="AddHotel" method="get">
+                <div>
+                    <input type="hidden" value="@Model.Vacation.Id" name="vacationId" />
+                    <input type="date" style="display:none;" id="addCheckIn" name="addCheckIn" />
+                    <input type="hidden" name="addName" id="addName" />
+                    <input type="hidden" id="addNights" name="addNights" />
+                    <input type="hidden" id="addAdults" name="addAdults" />
+                    <input type="hidden" id="addRooms" name="addRooms" />
+                    <input type="hidden" id="addRate" name="addRate" />
+                    <input type="hidden" id="hotelOffer" name="link" />
+                    <input type="hidden" id="hotelOfferName" name="linkName" />
+                    <button type="submit" id="addHotel" target="_blank" class="btn btn-secondary" style="display:none;" >Select Hotel</button>
+                </div>
+            </form>
         </div>
         <div class="col-md-1">
             <button id="prev" style="margin-top: 125px; display:none;" class="btn btn-info" onclick="displayHotelForward()">Next</button>
         </div>
     </div>
 </div>
+@if(Model.Hotel != null)
+{
+    <h1>@Model.Hotel.Name</h1>
+    <a target="_blank" href="@Model.Hotel.Link">@Model.Hotel.LinkName</a>
+}
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -500,6 +519,10 @@
         var nights = document.getElementById('nights').value;
         var adults = document.getElementById('adults').value;
         var rooms = document.getElementById('rooms').value;
+        document.getElementById('addCheckIn').value = checkIn;
+        document.getElementById('addNights').value = nights;
+        document.getElementById('addAdults').value = adults;
+        document.getElementById('addRooms').value = rooms;
         var settings = {
 	        "async": true,
 	        "crossDomain": true,
@@ -519,6 +542,7 @@
         document.getElementById('prev').style.display = 'block';
         document.getElementById('next').style.display = 'block';
         document.getElementById('hotelImg').style.display = 'block';
+        document.getElementById('addHotel').style.display = 'block';
         displayHotelForward();
     }
     
@@ -538,9 +562,17 @@
                 if (hotels.data[counter].photo != null) {
                     document.getElementById('hotelImg').src = hotels.data[counter].photo.images.medium.url;
                 }
+                if (hotels.data[counter].hac_offers.offers != null) {
+                    document.getElementById('hotelOffer').value = hotels.data[counter].hac_offers.offers[0].link;
+                    document.getElementById('hotelOfferName').value = hotels.data[counter].hac_offers.offers[0].provider_display_name;
+                }
+                document.getElementById('addName').value = hotels.data[counter].name;
+                document.getElementById('addRate').value = hotels.data[counter].price;
             }
+
         }
-        else {
+        else
+        {
             setTimeout(function() { displayHotelForward(); }, 10);
         }
     }
@@ -560,9 +592,10 @@
                 if (hotels.data[counter].photo != null) {
                     document.getElementById('hotelImg').src = hotels.data[counter].photo.images.medium.url;
                 }
+                document.getElementById('addName').value = hotels.data[counter].name;
+                document.getElementById('addRate').value = hotels.data[counter].price;
             }
         }
     }
-    
 </script>
         <script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>

@@ -21,9 +21,8 @@ namespace Travel_Planner.Controllers
         private readonly InterestOneService _interestOneService;
         private readonly InterestTwoService _interestTwoService;
         private readonly InterestThreeService _interestThreeService;
-        private readonly HotelService _hotelService;
         private readonly AirportService _airportService;
-        public VacationsController(ApplicationDbContext context, IRepositoryWrapper repo, DestinationIdService destinationIdService, InterestOneService interestOneService, InterestTwoService interestTwoService, InterestThreeService interestThreeService, HotelService hotelService, AirportService airportService)
+        public VacationsController(ApplicationDbContext context, IRepositoryWrapper repo, DestinationIdService destinationIdService, InterestOneService interestOneService, InterestTwoService interestTwoService, InterestThreeService interestThreeService, AirportService airportService)
         {
             _context = context;
             _repo = repo;
@@ -31,7 +30,6 @@ namespace Travel_Planner.Controllers
             _interestOneService = interestOneService;
             _interestTwoService = interestTwoService;
             _interestThreeService = interestThreeService;
-            _hotelService = hotelService;
             _airportService = airportService;
         }
 
@@ -47,6 +45,11 @@ namespace Travel_Planner.Controllers
                 _repo.Save();
             }
             vacation = await _repo.Vacation.GetVacation(traveler.VacationId);
+            var hotels = await _repo.Hotel.GetHotels(vacation.Id);
+            if(hotels.Count > 0)
+            {
+                travelerPlaces.Hotel = hotels[0];
+            }
             travelerPlaces.PlacesOne = await _interestOneService.GetInterestOnePlaces(traveler, vacation);
             travelerPlaces.PlacesTwo = await _interestTwoService.GetInterestTwoPlaces(vacation, traveler);
             travelerPlaces.PlacesThree = await _interestThreeService.GetInterestThreePlaces(vacation, traveler);
@@ -54,25 +57,33 @@ namespace Travel_Planner.Controllers
             travelerPlaces.Vacation = vacation;
             return View(travelerPlaces);
         }
-        [HttpPost]
-        public async Task<IActionResult> Index(string destinationId, DateTime checkIn, DateTime checkOut, int adults, int childs, int rooms)
+        //public async Task<IActionResult> Index(string destinationId, DateTime checkIn, DateTime checkOut, int adults, int childs, int rooms)
+        //{
+        //    Hotel hotel = new Hotel();
+        //    hotel.CheckIn = checkIn;
+        //    hotel.NumberOfAdults = adults;
+        //    hotel.NumberOfRooms = rooms;
+        //    HotelApi hotelApi = await _hotelService.GetHotels(destinationId, hotel);
+        //    TravelerPlacesViewModel travelerPlaces = new TravelerPlacesViewModel();
+        //    travelerPlaces.Hotels = hotelApi;
+        //    return await Index(0, travelerPlaces);
+        //}
+        public async Task<IActionResult> AddHotel(int vacationId, DateTime addCheckIn, string addName, int addNights, int addAdults, int addRooms, string addRate, string linkName, string link)
         {
             Hotel hotel = new Hotel();
-            hotel.CheckIn = checkIn;
-            hotel.CheckOut = checkOut;
-            hotel.NumberOfAdults = adults;
-            hotel.NumberOfChildren = childs;
-            hotel.NumberOfRooms = rooms;
-            HotelApi hotelApi = await _hotelService.GetHotels(destinationId, hotel);
-            TravelerPlacesViewModel travelerPlaces = new TravelerPlacesViewModel();
-            travelerPlaces.Hotels = hotelApi;
-            return await Index(0, travelerPlaces);
+            hotel.CheckIn = addCheckIn;
+            hotel.Name = addName;
+            hotel.Rate = addRate;
+            hotel.NumberOfAdults = addAdults;
+            hotel.NumberOfRooms = addRooms;
+            hotel.Nights = addNights;
+            hotel.VacationId = vacationId;
+            hotel.LinkName = linkName;
+            hotel.Link = link;
+            _repo.Hotel.CreateHotel(hotel);
+            _repo.Save();
+            return RedirectToAction("Index");
         }
-        //public async Task<IActionResult> GetHotels()
-        //{
-            
-        //    return await Index(hotelApi);
-        //}
         public string GetState(string state)
         {
             switch (state)
