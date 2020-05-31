@@ -50,6 +50,8 @@ namespace Travel_Planner.Controllers
             {
                 travelerPlaces.Hotels = hotels;
             }
+            var excursions = await _repo.Excursion.GetExcursions(vacation.Id);
+            travelerPlaces.Excursions = excursions;
             travelerPlaces.PlacesOne = await _interestOneService.GetInterestOnePlaces(traveler, vacation);
             travelerPlaces.PlacesTwo = await _interestTwoService.GetInterestTwoPlaces(vacation, traveler);
             travelerPlaces.PlacesThree = await _interestThreeService.GetInterestThreePlaces(vacation, traveler);
@@ -81,6 +83,15 @@ namespace Travel_Planner.Controllers
             hotel.LinkName = linkName;
             hotel.Link = link;
             _repo.Hotel.CreateHotel(hotel);
+            _repo.Save();
+            return RedirectToAction("Index");
+        }
+        public IActionResult addExcur(string name, string location, int vacationId)
+        {
+            Excursion excursion = new Excursion();
+            excursion.Name = name;
+            excursion.VacationId = vacationId;
+            _repo.Excursion.CreateExcursion(excursion);
             _repo.Save();
             return RedirectToAction("Index");
         }
