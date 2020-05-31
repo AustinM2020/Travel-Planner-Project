@@ -11,5 +11,7 @@ namespace Travel_Planner
         public static string googleApi = "AIzaSyAhIJmBTgESLGs0AqVqaTcp-Uz_GIoa9gg";
         public static string apcauth = "3fa0c811e4";
         public static string apcsecret = "7847f2d289214d7";
+        public static string flightApi = "Hqv7pbAxLbkvGXAmVJPWogKoC1l5QM12";
+        public static string flightSecret = "JQA73FbTwvVZjzaP";
     }
 }

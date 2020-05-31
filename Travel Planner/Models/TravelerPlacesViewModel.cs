@@ -15,7 +15,7 @@ namespace Travel_Planner.Models
         public Traveler Traveler { get; set; }
         public AirportApi destinationAirports { get; set; }
         public AirportApi originAirports { get; set; }
-        public Hotel Hotel { get; set; }
+        public List<Hotel> Hotels { get; set; }
 
     }
 }

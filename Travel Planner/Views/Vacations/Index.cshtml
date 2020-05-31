@@ -39,59 +39,36 @@
     }
 
     #checkIn {
-        width: 190px;
-        margin-top: 10px;
-        margin-right: 5px;
-        margin-left: 5px;
+        width: 170px;
     }
 
-
     #adults {
-        width: 100px;
-        margin-top: 10px;
-        margin-right: 5px;
-        margin-left: 5px;
+        width: 60px;
     }
 
     #nights {
-        width: 100px;
-        margin-top: 10px;
-        margin-right: 5px;
-        margin-left: 5px;
+        width: 60px;
     }
-
     #rooms {
-        width: 100px;
-        margin-top: 10px;
-        margin-right: 5px;
-        margin-left: 5px;
+        width: 60px;
     }
     #destination{
-        width: 200px;
-        margin-top: 10px;
-        margin-right: 5px;
+        width: 150px;
     }
     #origin{
-        width: 200px;
-        margin-top: 10px;
-        margin-right: 5px;
-        margin-left: 5px;
+        width: 150px;
     }
-    input {
-        display: inline-block;
-        float: left;
+    input, label {
+        display:block;
     }
-
-    label {
-        display: inline-block;
-        float: left;
+    #departDate{
+        width: 170px;
     }
-
-    #searchHotels {
-        margin-top: 10px;
+    #returnDate{
+        width: 170px;
     }
-    #searchFlights{
-        margin-top: 10px;
+    #flightAdults{
+        width: 60px;
     }
 </style>
 <div class="container">
@@ -111,16 +88,27 @@
     <div class="row">
         <div class="col-md-12">
             <form id="searchHotels" onsubmit="getHotels();return false">
-                <h3>Search Hotel</h3>
-                    <h5>
+                <h3 style="margin-top: 20px;">Search Hotels</h3>
+                    <p>
                         <input id="destinationId" type="hidden" value="@Model.Vacation.DestinationId"/>
-                        <label style="margin-top: 20px;" for="checkIn">Check-In: </label>
-                        <input class="form-control" id="checkIn" name="checkIn" type="date"/>
-                        <input class="form-control" id="nights"  name="nights"  placeholder="Nights" type="number" min="1" max="9" />
-                        <input class="form-control" id="adults" type="number" placeholder="Adults" min="1" max="9"/>
-                        <input class="form-control" id="rooms" type="number" name="rooms" placeholder="Rooms" min="1" max="9"/>
-                        <button style="margin-top: 10px;" type="submit" class="btn btn-warning">Search</button>
-                    </h5>
+                        <div style="float:left; margin-right:10px;">
+                            <label for="checkIn">Check-In</label>
+                            <input class="form-control" id="checkIn" name="checkIn" type="date" />
+                        </div>
+                        <div style="float:left; margin-right:10px;">
+                            <label for="nights">Nights</label>
+                            <input title="Nights" class="form-control" id="nights" name="nights" type="number" min="1" max="9" />
+                        </div>
+                        <div style="float:left; margin-right:10px;">
+                            <label for="adults">Adults</label>
+                            <input title="Adults" class="form-control" id="adults" type="number" min="1" max="9" />
+                        </div>
+                        <div style="float:left; margin-right:10px;">
+                            <label for="rooms">Rooms</label>
+                            <input title="Rooms" class="form-control" id="rooms" type="number" name="rooms" min="1" max="9" />
+                        </div>
+                        <button style="margin-top: 30px;" type="submit" class="btn btn-warning">Search</button>
+                    </p>
             </form>    
         </div>
     </div>
@@ -131,7 +119,7 @@
             <button id="next" style="margin-top: 125px; display:none;" class="btn btn-info" onclick="displayHotelBack()">Prev</button>
         </div>
         <div class="col-md-5">
-            <img style="width: 100%; height:250px; border-radius:10px; display:none;" alt="No Photo Found" id="hotelImg"/>
+            <img style="width: 100%; height:250px; border-radius:10px; display:none; margin-bottom: 20px;" alt="No Photo Found" id="hotelImg"/>
         </div>
         <div class="col-md-5">
             <h1 id="hotelName"></h1>
@@ -157,25 +145,56 @@
         </div>
     </div>
 </div>
-@if(Model.Hotel != null)
-{
-    <h1>@Model.Hotel.Name</h1>
-    <a target="_blank" href="@Model.Hotel.Link">@Model.Hotel.LinkName</a>
-}
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <form asp-action="GetFlights" method="get">
-                <h5>
-                    <input class="form-control" type="text" name="destination" id="destination" placeholder="Departure Airport"/>
-                    <input class="form-control" type="text" name="origin" id="origin" placeholder="Arrival Airport"/>
-                    <button type="submit" id="searchFlights" class="btn btn-warning">Search Flights</button>
-                </h5>
+            <form onsubmit="getAuth();return false">
+                <h3>Search Flights</h3>
+                <p>
+                    <div style="float:left; margin-right:10px;">
+                        <label for="origin">Departing Airport</label>
+                        <input class="form-control" type="text" name="origin" id="origin" placeholder="Ex:MKE" />
+                    </div>
+                    <div style="float:left; margin-right:10px;">
+                        <label for="destination">Arrival Airport</label>
+                        <input class="form-control" type="text" name="destination" id="destination" placeholder="Ex:ORD" />
+                    </div>
+                    <div style="float:left; margin-right:10px;">
+                        <label for="departDate">Departure Date</label>
+                        <input class="form-control" type="date" id="departDate" name="departDate" />
+                    </div>
+                    <div style="float:left; margin-right:10px;">
+                        <label for="returnDate">Return Date</label>
+                        <input class="form-control" type="date" id="returnDate" name="returnDate" />
+                    </div>
+                    <div style="float:left; margin-right:10px;">
+                        <label for="flightAdults">Adults</label>
+                        <input class="form-control" type="number" id="flightAdults" name="flightAdults" />
+                    </div>
+                    <button style="margin-top: 30px;" type="submit" id="searchFlights" class="btn btn-warning">Search Flights</button>
+                </p>
             </form>
         </div>
     </div>
 </div>
-<script>
+<div class="container">
+    <div class="row">
+        <div class="col-md-1">
+            <button id="prevFlight" style="margin-top: 125px; display:none;" class="btn btn-info" onclick="displayFlightForward()">Prev</button>
+        </div>
+        <div style="text-align:center;" class="col-md-10">
+            <h2 style="margin-top: 20px;" id="flightOne"></h2>
+            <h5><span id="flight1Date"></span><span style="margin-left: 20px; margin-right: 20px;" id="flight1Time"></span><span id="flight1Dur"></span></h5>
+            <h2 id="flightTwo"></h2>
+            <h5><span id="flight2Date"></span><span style="margin-left: 20px; margin-right: 20px;" id="flight2Time"></span><span id="flight2Dur"></span></h5>
+            <h5 id="flightPrice"></h5>
+        </div>
+        <div class="col-md-1">
+            <button id="nextFlight" style="margin-top: 125px; display:none;" class="btn btn-info" onclick="displayFlightForward()">Next</button>
+        </div>
+    </div>
+</div>
+        <script>
     var placesOneLocations = [];
     var placesTwoLocations = [];
     var placesThreeLocations = [];
@@ -545,7 +564,7 @@
         document.getElementById('addHotel').style.display = 'block';
         displayHotelForward();
     }
-    
+
     function displayHotelForward() {
         if (hotels.data != null) {
             if (counter < hotels.data.length) {
@@ -578,7 +597,7 @@
     }
     function displayHotelBack() {
         if (hotels.data != null ) {
-            if (counter != 0) {
+            if (counter >= 0) {
                 counter --;
                 if (hotels.data[counter].name != null) {
                     document.getElementById('hotelName').innerHTML = hotels.data[counter].name;
@@ -596,6 +615,105 @@
                 document.getElementById('addRate').value = hotels.data[counter].price;
             }
         }
+    }
+    var authToken;
+    var flights = [];
+    function getFlights(origin, destination, departDate, returnDate, adults) {
+        var settings = {
+	        "async": true,
+	        "crossDomain": true,
+	        "url": `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${origin}&destinationLocationCode=${destination}&departureDate=${departDate}&returnDate=${returnDate}&adults=${adults}&max=30&currencyCode=USD`,
+	        "method": "GET",
+	        "headers": {
+		        "Authorization": `${authToken}`
+	        }
+        }
+
+        $.ajax(settings).done(function (response) {
+            console.log(response);
+            flights = response;
+        });
+        document.getElementById('prevFlight').style.display = "block";
+        document.getElementById('nextFlight').style.display = "block";
+        displayFlightForward();
+    }
+    var flightCounter = -1;
+     function displayFlightForward() {
+        if (flights.data != null) {
+            if (flightCounter < flights.data.length) {
+                flightCounter++;
+                if (flights.data[flightCounter].itineraries != null) {
+                    document.getElementById('flightOne').innerHTML = `${flights.data[flightCounter].itineraries[0].segments[0].departure.iataCode} TO ${flights.data[flightCounter].itineraries[0].segments[0].arrival.iataCode}`;
+                    document.getElementById('flightTwo').innerHTML = `${flights.data[flightCounter].itineraries[1].segments[0].departure.iataCode} TO ${flights.data[flightCounter].itineraries[1].segments[0].arrival.iataCode}`;
+                    document.getElementById('flight1Dur').innerHTML = `Duration: ${flights.data[flightCounter].itineraries[0].segments[0].duration}`;
+                    document.getElementById('flight2Dur').innerHTML = `Duration: ${flights.data[flightCounter].itineraries[1].segments[0].duration}`;
+                    var dateOne = flights.data[flightCounter].itineraries[0].segments[0].departure.at;
+                    var dateTimeOne = dateOne.split("T");
+                    document.getElementById('flight1Date').innerHTML = `Date: ${dateTimeOne[0]}`;
+                    document.getElementById('flight1Time').innerHTML = `Time: ${dateTimeOne[1]}`;
+                    var dateTwo = flights.data[flightCounter].itineraries[1].segments[0].departure.at;
+                    var dateTimeTwo =dateTwo.split("T");
+                    document.getElementById('flight2Date').innerHTML = `Date: ${dateTimeTwo[0]}`;
+                    document.getElementById('flight2Time').innerHTML = `Time: ${dateTimeTwo[1]}`;
+                    
+                }
+                if (flights.data[flightCounter].price != null) {
+                    document.getElementById('flightPrice').innerHTML = `$${flights.data[flightCounter].price.total}`;
+                }
+            }
+        }
+         else
+        {
+            setTimeout(function() { displayFlightForward(); }, 10);
+        }
+    }
+    function displayFlightBack() {
+        if (flights.data != null) {
+            if (flightCounter >= 0 ) {
+                flightCounter--;
+                if (flights.data[flightCounter].itineraries != null) {
+                    document.getElementById('flightOne').innerHTML = `${flights.data[flightCounter].itineraries[0].segments[0].departure.iataCode}     TO     ${flights.data[flightCounter].itineraries[0].segments[0].arrival.iataCode}`;
+                    document.getElementById('flightTwo').innerHTML = `${flights.data[flightCounter].itineraries[1].segments[0].departure.iataCode}     TO     ${flights.data[flightCounter].itineraries[1].segments[0].arrival.iataCode}`;
+                    document.getElementById('flight1Dur').innerHTML = `Duration:${flights.data[flightCounter].itineraries[0].segments[0].duration}`;
+                    document.getElementById('flight2Dur').innerHTML = `Duration:${flights.data[flightCounter].itineraries[1].segments[0].duration}`;
+                    var dateOne = flights.data[flightCounter].itineraries[0].segments[0].departure.at;
+                    var dateTimeOne = dateOne.split("T");
+                    document.getElementById('flight1Date').innerHTML = `Date:${dateTimeOne[0]}`;
+                    document.getElementById('flight1Time').innerHTML = `Time: ${dateTimeOne[1]}`;
+                    var dateTwo = flights.data[flightCounter].itineraries[1].segments[0].departure.at;
+                    var dateTimeTwo =dateTwo.split("T");
+                    document.getElementById('flight2Date').innerHTML = `Date:${dateTimeTwo[0]}`;
+                    document.getElementById('flight2Time').innerHTML = `Time:${dateTimeTwo[1]}`;
+                    
+                }
+                if (flights.data[flightCounter].price != null) {
+                    document.getElementById('flightPrice').innerHTML = `$${flights.data[flightCounter].price.total}`;
+                }
+            }
+        }
+    }
+    function getAuth() {
+        var origin = document.getElementById('origin').value;
+        var destination = document.getElementById('destination').value;
+        var departDate = document.getElementById('departDate').value;
+        var returnDate = document.getElementById('returnDate').value;
+        var adults = document.getElementById('flightAdults').value;
+        var settings = {
+	        "async": true,
+	        "crossDomain": true,
+	        "url": `https://test.api.amadeus.com/v1/security/oauth2/token`,
+	        "method": "POST",
+	        "headers": {
+		        "Content-Type": "application/x-www-form-urlencoded"
+            },
+            "data": "grant_type=client_credentials&client_id=@APIkeys.flightApi&client_secret=@APIkeys.flightSecret"
+        }
+
+        $.ajax(settings).done(function (response) {
+            console.log(response);
+            authToken = `Bearer ${response.access_token}`
+        });
+        setTimeout(function() { getFlights(origin, destination, departDate, returnDate, adults); }, 1000);
     }
 </script>
         <script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>

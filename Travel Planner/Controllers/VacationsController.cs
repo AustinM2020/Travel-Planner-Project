@@ -48,7 +48,7 @@ namespace Travel_Planner.Controllers
             var hotels = await _repo.Hotel.GetHotels(vacation.Id);
             if(hotels.Count > 0)
             {
-                travelerPlaces.Hotel = hotels[0];
+                travelerPlaces.Hotels = hotels;
             }
             travelerPlaces.PlacesOne = await _interestOneService.GetInterestOnePlaces(traveler, vacation);
             travelerPlaces.PlacesTwo = await _interestTwoService.GetInterestTwoPlaces(vacation, traveler);
