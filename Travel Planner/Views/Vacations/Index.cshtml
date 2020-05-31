@@ -76,11 +76,57 @@
         <div class="col-md-12">
             <h1 id="Destination">@Model.Vacation.Destination</h1>
         </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
         <div class="col-md-5">
             <button class="btn btn" id="markersA" onclick="addMakersA()">@Model.Traveler.InterestOne</button>
             <button class="btn btn-info" id="markersB" onclick="addMarkersB()">@Model.Traveler.InterestTwo</button>
             <button class="btn btn-secondary" id="markersC" onclick="addMarkersC()">@Model.Traveler.InterestThree</button>
             <div id="map"></div>
+        </div>
+        <div style="text-align: center; border-color: black;" class="col-md-1">
+            <p>Today</p>
+            <p id="tempToday"></p>
+            <p>Forcast:</p>
+            <p id="conToday"></p>
+        </div>
+        <div style="text-align: center; border-color: black;" class="col-md-1">
+            <p id="day1"></p>
+            <p id="day1Temp"></p>
+            <p>Forcast:</p>
+            <p id="day1Con"></p>
+        </div>
+        <div style="text-align: center;" class="col-md-1">
+            <p id="day2"></p>
+            <p id="day2Temp"></p>
+            <p>Forcast:</p>
+            <p id="day2Con"></p>
+        </div>
+        <div style="text-align: center;" class="col-md-1">
+            <p id="day3"></p>
+            <p id="day3Temp"></p>
+            <p>Forcast:</p>
+            <p id="day3Con"></p>
+        </div>
+        <div style="text-align: center;" class="col-md-1">
+            <p id="day4"></p>
+            <p id="day4Temp"></p>
+            <p>Forcast:</p>
+            <p id="day4Con"></p>
+        </div>
+        <div style="text-align: center;" class="col-md-1">
+            <p id="day5"></p>
+            <p id="day5Temp"></p>
+            <p>Forcast:</p>
+            <p id="day5Con"></p>
+        </div>
+        <div style="text-align: center;" class="col-md-1">
+            <p id="day6"></p>
+            <p id="day6Temp"></p>
+            <p>Forcast:</p>
+            <p id="day6Con"></p>
         </div>
     </div>
 </div>
@@ -180,7 +226,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-1">
-            <button id="prevFlight" style="margin-top: 125px; display:none;" class="btn btn-info" onclick="displayFlightForward()">Prev</button>
+            <button id="prevFlight" style="margin-top: 125px; display:none;" class="btn btn-info" onclick="displayFlightBack()">Prev</button>
         </div>
         <div style="text-align:center;" class="col-md-10">
             <h2 style="margin-top: 20px;" id="flightOne"></h2>
@@ -715,5 +761,53 @@
         });
         setTimeout(function() { getFlights(origin, destination, departDate, returnDate, adults); }, 1000);
     }
+    function getWeather() {
+        var settings = {
+	        "async": true,
+	        "crossDomain": true,
+	        "url": "https://api.openweathermap.org/data/2.5/onecall?lat=@Model.Vacation.Lat&lon=@Model.Vacation.Long&units=imperial&appid=@APIkeys.weatherApi",
+	        "method": "GET",
+        }
+
+        $.ajax(settings).done(function (response) {
+            console.log(response);
+            displayWeather(response);
+        });
+    }
+    function displayWeather(response) {
+        document.getElementById('tempToday').innerHTML = `Temp:${response.daily[0].temp.day}`;
+        document.getElementById('conToday').innerHTML = response.daily[0].weather[0].description;
+        var time1 = response.daily[1].dt;
+        var date1 = new Date(0);
+        document.getElementById('day1').innerHTML = date1.setUTCSeconds(time1);
+        document.getElementById('day1Temp').innerHTML = `Temp:${response.daily[1].temp.day}`;
+        document.getElementById('day1Con').innerHTML = response.daily[1].weather[0].description;
+        var time1 = response.daily[2].dt;
+        var date1 = new Date(0);
+        document.getElementById('day2').innerHTML = date1.setUTCSeconds(time1);
+        document.getElementById('day2Temp').innerHTML = `Temp:${response.daily[2].temp.day}`;
+        document.getElementById('day2Con').innerHTML = response.daily[2].weather[0].description;
+        var time1 = response.daily[3].dt;
+        var date1 = new Date(0);
+        document.getElementById('day3').innerHTML = date1.setUTCSeconds(time1);
+        document.getElementById('day3Temp').innerHTML = `Temp:${response.daily[3].temp.day}`;
+        document.getElementById('day3Con').innerHTML = response.daily[3].weather[0].description;
+        var time1 = response.daily[4].dt;
+        var date1 = new Date(0);
+        document.getElementById('day4').innerHTML = date1.setUTCSeconds(time1);
+        document.getElementById('day4Temp').innerHTML = `Temp:${response.daily[4].temp.day}`;
+        document.getElementById('day4Con').innerHTML = response.daily[4].weather[0].description;
+        var time1 = response.daily[5].dt;
+        var date1 = new Date(0);
+        document.getElementById('day5').innerHTML = date1.setUTCSeconds(time1);
+        document.getElementById('day5Temp').innerHTML = `Temp:${response.daily[5].temp.day}`;
+        document.getElementById('day5Con').innerHTML = response.daily[5].weather[0].description;
+        var time1 = response.daily[6].dt;
+        var date1 = new Date(0);
+        document.getElementById('day6').innerHTML = date1.setUTCSeconds(time1);
+        document.getElementById('day6Temp').innerHTML = `Temp:${response.daily[6].temp.day}`;
+        document.getElementById('day6Con').innerHTML = response.daily[6].weather[0].description;
+    }
+    window.onload = getWeather;
 </script>
         <script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>

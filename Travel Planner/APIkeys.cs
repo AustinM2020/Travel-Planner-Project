@@ -13,5 +13,6 @@ namespace Travel_Planner
         public static string apcsecret = "7847f2d289214d7";
         public static string flightApi = "Hqv7pbAxLbkvGXAmVJPWogKoC1l5QM12";
         public static string flightSecret = "JQA73FbTwvVZjzaP";
+        public static string weatherApi = "13f5ee2697cd40b2a916c47236653aec";
     }
 }
