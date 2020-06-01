@@ -89,10 +89,6 @@
             var lat = Math.Round(Model.Vacation.Lat.Value, 2);
             var lng = Math.Round(Model.Vacation.Long.Value, 2);
             var lngString = lng.ToString();
-            //if(lngString.Substring(lngString.IndexOf("."), lngString.Length).Length == 1)
-            //{
-            //    lngString = lngString + "0";
-            //}
             string coords = lat.ToString() + lngString;
             if (coords.Contains('-'))
             {
@@ -111,7 +107,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1 id="Destination">@Model.Vacation.Destination</h1>
+            <h1 id="Destination">@Model.Vacation.Destination <span> <a style="text-decoration:none; color:red; font-size:small;" asp-action="Delete" asp-route-id="@Model.Vacation.Id">Delete Vacation</a></span></h1>
         </div>
     </div>
 </div>
@@ -161,11 +157,11 @@
                                 @if (item.Category == "Local Attractions" || item.Category == "Local Landmarks")
                                 {
                                     var interest = item.Category.Split(" ");
-                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: lightgreen">@interest[1]</span></li>
+                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: lightgreen">@interest[1]</span><br /><a style="text-decoration:none; color:red;" asp-action="DeleteExcur" asp-route-id="@item.Id">Remove</a></li>
                                 }
                                 else
                                 {
-                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: lightgreen">@item.Category</span></li>
+                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: lightgreen">@item.Category</span><br /><a style="text-decoration:none; color:red;" asp-action="DeleteExcur" asp-route-id="@item.Id">Remove</a></li>
                                 }
                             }
                             else if (Model.Traveler.InterestTwo == item.Category)
@@ -173,11 +169,11 @@
                                 @if (item.Category == "Local Attactions" || item.Category == "Local Landmarks")
                                 {
                                     var interest = item.Category.Split(" ");
-                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: #6CC3D5">@interest[1]</span></li>
+                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: #6CC3D5">@interest[1]</span><br /><a style="text-decoration:none; color:red;" asp-action="DeleteExcur" asp-route-id="@item.Id">Remove</a></li>
                                 }
                                 else
                                 {
-                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: #6CC3D5">@item.Category</span></li>
+                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: #6CC3D5">@item.Category</span><br /><a style="text-decoration:none; color:red;" asp-action="DeleteExcur" asp-route-id="@item.Id">Remove</a></li>
                                 }
                             }
                             else
@@ -185,17 +181,17 @@
                                 @if (item.Category == "Local Attactions" || item.Category == "Local Landmarks")
                                 {
                                     var interest = item.Category.Split(" ");
-                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: #F3969A">@interest[1]</span></li>
+                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: #F3969A">@interest[1]</span><br /><a style="text-decoration:none; color:red;" asp-action="DeleteExcur" asp-route-id="@item.Id">Remove</a></li>
                                 }
                                 else
                                 {
-                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: #F3969A">@item.Category</span></li>
+                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: #F3969A">@item.Category</span><br /><a style="text-decoration:none; color:red;" asp-action="DeleteExcur" asp-route-id="@item.Id">Remove</a></li>
                                 }
                             }
                         }
                         else
                         {
-                            <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance</li>
+                            <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance<br /><a style="text-decoration:none; color:red;" asp-action="DeleteExcur" asp-route-id="@item.Id">Remove</a></li>
                         }
                     }
                 </ul>
@@ -277,6 +273,19 @@
         </div>
     </div>
 </div>
+
+<div class="container">
+    <div class="row">
+        <div style="background-color:#e0eaea" class="col-md-12">
+            @if (Model.Hotels != null)
+            {
+                <h3>@Model.Hotels.Name</h3>
+                <h3>@Model.Hotels.CheckIn.Value.ToShortDateString() | @Model.Hotels.Nights Nights | @Model.Hotels.NumberOfAdults Adults | @Model.Hotels.NumberOfRooms Rooms | @Model.Hotels.Rate</h3>
+                <h3><a href="@Model.Hotels.Link">@Model.Hotels.LinkName</a></h3>
+            }
+        </div>
+    </div>
+</div>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -301,7 +310,7 @@
                     </div>
                     <div style="float:left; margin-right:10px;">
                         <label for="flightAdults">Adults</label>
-                        <input class="form-control" type="number" id="flightAdults" name="flightAdults" />
+                        <input class="form-control" type="number" id="flightAdults" name="flightAdults" min="1" max="9"/>
                     </div>
                     <button style="margin-top: 30px;" type="submit" id="searchFlights" class="btn btn-warning">Search Flights</button>
                 </p>
@@ -314,19 +323,45 @@
         <div class="col-md-1">
             <button id="prevFlight" style="margin-top: 125px; display:none;" class="btn btn-info" onclick="displayFlightBack()">Prev</button>
         </div>
-        <div style="text-align:center;" class="col-md-10">
-            <h2 style="margin-top: 20px;" id="flightOne"></h2>
-            <h5><span id="flight1Date"></span><span style="margin-left: 20px; margin-right: 20px;" id="flight1Time"></span><span id="flight1Dur"></span></h5>
-            <h2 id="flightTwo"></h2>
-            <h5><span id="flight2Date"></span><span style="margin-left: 20px; margin-right: 20px;" id="flight2Time"></span><span id="flight2Dur"></span></h5>
-            <h5 id="flightPrice"></h5>
+        <div class="col-md-10">
+            <div>
+                <ul style="list-style:none; list-style-type:none; text-align:center; font-size:200%" id="price">
+                </ul>
+            </div>
+            <div>
+                <h1 id="arrival" style="display:none; color:black; text-align:center; margin-left:20px;">Arrival Flights</h1>
+                <ul style="list-style:none; list-style-type:none; text-align:center; font-size:200%" id="flightListArrival">
+                </ul>
+            </div>
+            <div>
+                <h1 id="return" style="color:black; text-align:center; margin-left:20px; display:none;">Return Flights</h1>
+                <ul style="list-style:none; list-style-type:none; text-align:center; font-size:200%" id="flightListReturn">
+                </ul>
+            </div>
+            <form asp-action="AddFlight" method="get">
+                <input type="hidden" value="@Model.Vacation.Id" name="vacationId"/>
+                <input type="hidden" name="airports" id="airports" />
+                <input type="hidden" name="flightPrice" id="flightPrice" />
+                <button id="selectFlight" style="display:none; margin-bottom:20px;" target="_blank" class="btn btn-secondary" type="submit">Select Flight</button>
+            </form>
         </div>
         <div class="col-md-1">
             <button id="nextFlight" style="margin-top: 125px; display:none;" class="btn btn-info" onclick="displayFlightForward()">Next</button>
         </div>
     </div>
 </div>
-        <script>
+<div class="container">
+    <div class="row">
+        <div style="background-color:#e0eaea" class="col-md-12">
+            @if (Model.Flight != null)
+            {
+                <h1>@Model.Flight.Flights</h1>
+                <h1>@Model.Flight.Price</h1>
+            }
+        </div>
+    </div>
+</div>
+<script>
     var placesOneLocations = [];
     var placesTwoLocations = [];
     var placesThreeLocations = [];
@@ -809,6 +844,10 @@
         });
         document.getElementById('prevFlight').style.display = "block";
         document.getElementById('nextFlight').style.display = "block";
+        document.getElementById('arrival').style.display = "block";
+        document.getElementById('return').style.display = "block";
+        document.getElementById('selectFlight').style.display = "block";
+        document.getElementById("airports").value = `${origin} TO ${destination}`;
         displayFlightForward();
     }
     var flightCounter = -1;
@@ -817,22 +856,36 @@
             if (flightCounter < flights.data.length) {
                 flightCounter++;
                 if (flights.data[flightCounter].itineraries != null) {
-                    document.getElementById('flightOne').innerHTML = `${flights.data[flightCounter].itineraries[0].segments[0].departure.iataCode} TO ${flights.data[flightCounter].itineraries[0].segments[0].arrival.iataCode}`;
-                    document.getElementById('flightTwo').innerHTML = `${flights.data[flightCounter].itineraries[1].segments[0].departure.iataCode} TO ${flights.data[flightCounter].itineraries[1].segments[0].arrival.iataCode}`;
-                    document.getElementById('flight1Dur').innerHTML = `Duration: ${flights.data[flightCounter].itineraries[0].segments[0].duration}`;
-                    document.getElementById('flight2Dur').innerHTML = `Duration: ${flights.data[flightCounter].itineraries[1].segments[0].duration}`;
-                    var dateOne = flights.data[flightCounter].itineraries[0].segments[0].departure.at;
-                    var dateTimeOne = dateOne.split("T");
-                    document.getElementById('flight1Date').innerHTML = `Date: ${dateTimeOne[0]}`;
-                    document.getElementById('flight1Time').innerHTML = `Time: ${dateTimeOne[1]}`;
-                    var dateTwo = flights.data[flightCounter].itineraries[1].segments[0].departure.at;
-                    var dateTimeTwo =dateTwo.split("T");
-                    document.getElementById('flight2Date').innerHTML = `Date: ${dateTimeTwo[0]}`;
-                    document.getElementById('flight2Time').innerHTML = `Time: ${dateTimeTwo[1]}`;
-                    
-                }
-                if (flights.data[flightCounter].price != null) {
-                    document.getElementById('flightPrice').innerHTML = `$${flights.data[flightCounter].price.total}`;
+                    $("#flightListArrival").empty();
+                    $("#price").empty();
+                    var price = document.createElement("LI");
+                    var text = document.createTextNode(`Price: $${flights.data[flightCounter].price.total}`);
+                    price.appendChild(text);
+                    document.getElementById("price").appendChild(price);
+                    document.getElementById(`flightPrice`).value = `Price: $${flights.data[flightCounter].price.total}`;
+                    var i;
+                    for (i = 0; i < flights.data[flightCounter].itineraries[0].segments.length; i++) {
+                        var item = document.createElement("LI");
+                        var flight = document.createTextNode(`${flights.data[flightCounter].itineraries[0].segments[i].departure.iataCode} TO ${flights.data[flightCounter].itineraries[0].segments[i].arrival.iataCode} | Time: ${flights.data[flightCounter].itineraries[0].segments[i].departure.at}`);
+                        item.appendChild(flight);
+                        document.getElementById("flightListArrival").appendChild(item);
+                    }
+                    var durOne = document.createElement("LI");
+                    var durationOne = document.createTextNode(`Duration: ${flights.data[flightCounter].itineraries[0].duration}`);
+                    durOne.appendChild(durationOne);
+                    document.getElementById("flightListArrival").appendChild(durOne);
+                    $("#flightListReturn").empty();
+                    var j;
+                    for (j = 0; j < flights.data[flightCounter].itineraries[1].segments.length; j++) {
+                        var item = document.createElement("LI");
+                        var flight = document.createTextNode(`${flights.data[flightCounter].itineraries[1].segments[j].departure.iataCode} TO ${flights.data[flightCounter].itineraries[1].segments[j].arrival.iataCode} | Time: ${flights.data[flightCounter].itineraries[1].segments[j].departure.at}`);
+                        item.appendChild(flight);
+                        document.getElementById("flightListReturn").appendChild(item);
+                    }
+                    var durTwo = document.createElement("LI");
+                    var durationTwo = document.createTextNode(`Duration: ${flights.data[flightCounter].itineraries[1].duration}`);
+                    durTwo.appendChild(durationTwo);
+                    document.getElementById("flightListReturn").appendChild(durTwo);                    
                 }
             }
         }
@@ -843,25 +896,39 @@
     }
     function displayFlightBack() {
         if (flights.data != null) {
-            if (flightCounter >= 0 ) {
+            if (flightCounter < flights.data.length) {
                 flightCounter--;
                 if (flights.data[flightCounter].itineraries != null) {
-                    document.getElementById('flightOne').innerHTML = `${flights.data[flightCounter].itineraries[0].segments[0].departure.iataCode}     TO     ${flights.data[flightCounter].itineraries[0].segments[0].arrival.iataCode}`;
-                    document.getElementById('flightTwo').innerHTML = `${flights.data[flightCounter].itineraries[1].segments[0].departure.iataCode}     TO     ${flights.data[flightCounter].itineraries[1].segments[0].arrival.iataCode}`;
-                    document.getElementById('flight1Dur').innerHTML = `Duration:${flights.data[flightCounter].itineraries[0].segments[0].duration}`;
-                    document.getElementById('flight2Dur').innerHTML = `Duration:${flights.data[flightCounter].itineraries[1].segments[0].duration}`;
-                    var dateOne = flights.data[flightCounter].itineraries[0].segments[0].departure.at;
-                    var dateTimeOne = dateOne.split("T");
-                    document.getElementById('flight1Date').innerHTML = `Date:${dateTimeOne[0]}`;
-                    document.getElementById('flight1Time').innerHTML = `Time: ${dateTimeOne[1]}`;
-                    var dateTwo = flights.data[flightCounter].itineraries[1].segments[0].departure.at;
-                    var dateTimeTwo =dateTwo.split("T");
-                    document.getElementById('flight2Date').innerHTML = `Date:${dateTimeTwo[0]}`;
-                    document.getElementById('flight2Time').innerHTML = `Time:${dateTimeTwo[1]}`;
-                    
-                }
-                if (flights.data[flightCounter].price != null) {
-                    document.getElementById('flightPrice').innerHTML = `$${flights.data[flightCounter].price.total}`;
+                    $("#flightListArrival").empty();
+                    $("#price").empty();
+                    var price = document.createElement("LI");
+                    var text = document.createTextNode(`Price: $${flights.data[flightCounter].price.total}`);
+                    price.appendChild(text);
+                    document.getElementById("price").appendChild(price);
+                    document.getElementById(`flightPrice`).value = `Price: $${flights.data[flightCounter].price.total}`;
+                    var i;
+                    for (i = 0; i < flights.data[flightCounter].itineraries[0].segments.length; i++) {
+                        var item = document.createElement("LI");
+                        var flight = document.createTextNode(`${flights.data[flightCounter].itineraries[0].segments[i].departure.iataCode} TO ${flights.data[flightCounter].itineraries[0].segments[i].arrival.iataCode} | Time: ${flights.data[flightCounter].itineraries[0].segments[i].departure.at}`);
+                        item.appendChild(flight);
+                        document.getElementById("flightListArrival").appendChild(item);
+                    }
+                    var durOne = document.createElement("LI");
+                    var durationOne = document.createTextNode(`Duration: ${flights.data[flightCounter].itineraries[0].duration}`);
+                    durOne.appendChild(durationOne);
+                    document.getElementById("flightListArrival").appendChild(durOne);
+                    $("#flightListReturn").empty();
+                    var j;
+                    for (j = 0; j < flights.data[flightCounter].itineraries[1].segments.length; j++) {
+                        var item = document.createElement("LI");
+                        var flight = document.createTextNode(`${flights.data[flightCounter].itineraries[1].segments[j].departure.iataCode} TO ${flights.data[flightCounter].itineraries[1].segments[j].arrival.iataCode} | Time: ${flights.data[flightCounter].itineraries[1].segments[j].departure.at}`);
+                        item.appendChild(flight);
+                        document.getElementById("flightListReturn").appendChild(item);
+                    }
+                    var durTwo = document.createElement("LI");
+                    var durationTwo = document.createTextNode(`Duration: ${flights.data[flightCounter].itineraries[1].duration}`);
+                    durTwo.appendChild(durationTwo);
+                    document.getElementById("flightListReturn").appendChild(durTwo);                    
                 }
             }
         }

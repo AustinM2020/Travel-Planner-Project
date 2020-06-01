@@ -48,7 +48,12 @@ namespace Travel_Planner.Controllers
             var hotels = await _repo.Hotel.GetHotels(vacation.Id);
             if(hotels.Count > 0)
             {
-                travelerPlaces.Hotels = hotels;
+                travelerPlaces.Hotels = hotels[0];
+            }
+            var flights = await _repo.Flight.GetFlights(vacation.Id);
+            if (flights.Count > 0)
+            {
+                travelerPlaces.Flight = flights[0];
             }
             var excursions = await _repo.Excursion.GetExcursions(vacation.Id);
             travelerPlaces.Excursions = excursions.OrderByDescending(e => e.Importance).ToList();
@@ -70,20 +75,61 @@ namespace Travel_Planner.Controllers
         //    travelerPlaces.Hotels = hotelApi;
         //    return await Index(0, travelerPlaces);
         //}
+        
         public async Task<IActionResult> AddHotel(int vacationId, DateTime addCheckIn, string addName, int addNights, int addAdults, int addRooms, string addRate, string linkName, string link)
         {
-            Hotel hotel = new Hotel();
-            hotel.CheckIn = addCheckIn;
-            hotel.Name = addName;
-            hotel.Rate = addRate;
-            hotel.NumberOfAdults = addAdults;
-            hotel.NumberOfRooms = addRooms;
-            hotel.Nights = addNights;
-            hotel.VacationId = vacationId;
-            hotel.LinkName = linkName;
-            hotel.Link = link;
-            _repo.Hotel.CreateHotel(hotel);
-            _repo.Save();
+            var hotels = await _repo.Hotel.GetHotels(vacationId);
+            if (hotels.Count == 0)
+            {
+                Hotel hotel = new Hotel();
+                hotel.CheckIn = addCheckIn;
+                hotel.Name = addName;
+                hotel.Rate = addRate;
+                hotel.NumberOfAdults = addAdults;
+                hotel.NumberOfRooms = addRooms;
+                hotel.Nights = addNights;
+                hotel.VacationId = vacationId;
+                hotel.LinkName = linkName;
+                hotel.Link = link;
+                _repo.Hotel.CreateHotel(hotel);
+                _repo.Save();
+            }
+            else
+            {
+                hotels[0].CheckIn = addCheckIn;
+                hotels[0].Name = addName;
+                hotels[0].Rate = addRate;
+                hotels[0].NumberOfAdults = addAdults;
+                hotels[0].NumberOfRooms = addRooms;
+                hotels[0].Nights = addNights;
+                hotels[0].VacationId = vacationId;
+                hotels[0].LinkName = linkName;
+                hotels[0].Link = link;
+                _repo.Hotel.EditHotel(hotels[0]);
+                _repo.Save();
+            }
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> AddFlight(int vacationId, string airports, string flightPrice)
+        {
+            var flights = await _repo.Flight.GetFlights(vacationId);
+            if(flights.Count == 0)
+            {
+                Flight flight = new Flight();
+                flight.VacationId = vacationId;
+                flight.Flights = airports;
+                flight.Price = flightPrice;
+                _repo.Flight.CreateFlight(flight);
+                _repo.Save();
+            }
+            else
+            {
+                flights[0].VacationId = vacationId;
+                flights[0].Flights = airports;
+                flights[0].Price = flightPrice;
+                _repo.Flight.EditFlight(flights[0]);
+                _repo.Save();
+            }
             return RedirectToAction("Index");
         }
         public IActionResult addExcur(int vacationId, string name, int Importance, string category)
@@ -97,207 +143,13 @@ namespace Travel_Planner.Controllers
             _repo.Save();
             return RedirectToAction("Index");
         }
-        public string GetState(string state)
+        public IActionResult DeleteExcur(int Id)
         {
-            switch (state)
-            {
-                case "AL":
-                    return "ALABAMA";
-
-                case "AK":
-                    return "ALASKA";
-
-                case "AS":
-                    return "AMERICAN SAMOA";
-
-                case "AZ":
-                    return "ARIZONA";
-
-                case "AR":
-                    return "ARKANSAS";
-
-                case "CA":
-                    return "CALIFORNIA";
-
-                case "CO":
-                    return "COLORADO";
-
-                case "CT":
-                    return "CONNECTICUT";
-
-                case "DE":
-                    return "DELAWARE";
-
-                case "DC":
-                    return "DISTRICT OF COLUMBIA";
-
-                case "FM":
-                    return "FEDERATED STATES OF MICRONESIA";
-
-                case "FL":
-                    return "FLORIDA";
-
-                case "GA":
-                    return "GEORGIA";
-
-                case "GU":
-                    return "GUAM";
-
-                case "HI":
-                    return "HAWAII";
-
-                case "ID":
-                    return "IDAHO";
-
-                case "IL":
-                    return "ILLINOIS";
-
-                case "IN":
-                    return "INDIANA";
-
-                case "IA":
-                    return "IOWA";
-
-                case "KS":
-                    return "KANSAS";
-
-                case "KY":
-                    return "KENTUCKY";
-
-                case "LA":
-                    return "LOUISIANA";
-
-                case "ME":
-                    return "MAINE";
-
-                case "MH":
-                    return "MARSHALL ISLANDS";
-
-                case "MD":
-                    return "MARYLAND";
-
-                case "MA":
-                    return "MASSACHUSETTS";
-
-                case "MI":
-                    return "MICHIGAN";
-
-                case "MN":
-                    return "MINNESOTA";
-
-                case "MS":
-                    return "MISSISSIPPI";
-
-                case "MO":
-                    return "MISSOURI";
-
-                case "MT":
-                    return "MONTANA";
-
-                case "NE":
-                    return "NEBRASKA";
-
-                case "NV":
-                    return "NEVADA";
-
-                case "NH":
-                    return "NEW HAMPSHIRE";
-
-                case "NJ":
-                    return "NEW JERSEY";
-
-                case "NM":
-                    return "NEW MEXICO";
-
-                case "NY":
-                    return "NEW YORK";
-
-                case "NC":
-                    return "NORTH CAROLINA";
-
-                case "ND":
-                    return "NORTH DAKOTA";
-
-                case "MP":
-                    return "NORTHERN MARIANA ISLANDS";
-
-                case "OH":
-                    return "OHIO";
-
-                case "OK":
-                    return "OKLAHOMA";
-
-                case "OR":
-                    return "OREGON";
-
-                case "PW":
-                    return "PALAU";
-
-                case "PA":
-                    return "PENNSYLVANIA";
-
-                case "PR":
-                    return "PUERTO RICO";
-
-                case "RI":
-                    return "RHODE ISLAND";
-
-                case "SC":
-                    return "SOUTH CAROLINA";
-
-                case "SD":
-                    return "SOUTH DAKOTA";
-
-                case "TN":
-                    return "TENNESSEE";
-
-                case "TX":
-                    return "TEXAS";
-
-                case "UT":
-                    return "UTAH";
-
-                case "VT":
-                    return "VERMONT";
-
-                case "VI":
-                    return "VIRGIN ISLANDS";
-
-                case "VA":
-                    return "VIRGINIA";
-
-                case "WA":
-                    return "WASHINGTON";
-
-                case "WV":
-                    return "WEST VIRGINIA";
-
-                case "WI":
-                    return "WISCONSIN";
-
-                case "WY":
-                    return "WYOMING";
-            }
-
-            throw new Exception("Not Available");
+            _repo.Excursion.DeleteExcursion(Id);
+            _repo.Save();
+            return RedirectToAction("Index");
         }
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var vacation = await _context.Vacations
-                .Include(v => v.Traveler)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (vacation == null)
-            {
-                return NotFound();
-            }
-
-            return View(vacation);
-        }
+       
         public async Task<IActionResult> Create(Vacation vacation)
         {
             if (ModelState.IsValid)
@@ -311,83 +163,16 @@ namespace Travel_Planner.Controllers
             ViewData["TravelerId"] = new SelectList(_context.Travelers, "Id", "Id", vacation.TravelerId);
             return RedirectToAction("Index", "Traveler");
         }
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var vacation = await _context.Vacations.FindAsync(id);
-            if (vacation == null)
-            {
-                return NotFound();
-            }
-            ViewData["TravelerId"] = new SelectList(_context.Travelers, "Id", "Id", vacation.TravelerId);
-            return View(vacation);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Destination,DestinationId,VacationStart,VacationEnd,Lat,Long,TravelerId")] Vacation vacation)
-        {
-            if (id != vacation.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(vacation);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!VacationExists(vacation.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["TravelerId"] = new SelectList(_context.Travelers, "Id", "Id", vacation.TravelerId);
-            return View(vacation);
-        }
+        
 
         // GET: Vacations/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var vacation = await _context.Vacations
-                .Include(v => v.Traveler)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (vacation == null)
-            {
-                return NotFound();
-            }
-
-            return View(vacation);
+            _repo.Vacation.DeleteVacation(id.Value);
+            _repo.Save();
+            return RedirectToAction("Index", "Traveler");
         }
 
-        // POST: Vacations/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var vacation = await _context.Vacations.FindAsync(id);
-            _context.Vacations.Remove(vacation);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
         private bool VacationExists(int id)
         {

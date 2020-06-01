@@ -21,12 +21,14 @@ namespace Travel_Planner.Models
         public string State { get; set; }
         [Display(Name = "Zip Code")]
         public int ZipCode { get; set; }
+        [Display(Name = "Interest One")]
         public string InterestOne { get; set; }
+        [Display(Name = "Interest Two")]
         public string InterestTwo { get; set; }
+        [Display(Name = "Interest Three")]
         public string InterestThree { get; set; }
         public double? Lat { get; set; }
         public double? Long { get; set; }
-        public List<Vacation> Vacations { get; set; }
         
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }
