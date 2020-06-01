@@ -50,7 +50,13 @@
     }
 </style>
 <h1 id="add">Add New Vacation</h1>
-
+@if(Model.exists == true)
+{
+    <div class="alert alert-dismissible alert-dark">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <p>A Vacation Already Exisits On This Date</p>
+    </div>
+}
 <form id="vacationInput" asp-action="Index" method="post">
     <div>
         <h5>
@@ -305,6 +311,7 @@
         })
         var i;  
         var marker;
+        var flightPath;
         for (i = 0; i < vacationTitles.length; i++) {
             var permalink = "https://localhost:44350/Vacations/Index?Id=" + vacationIds[i] + "";
             marker = new google.maps.Marker({
@@ -319,9 +326,21 @@
             });
             (function(permalink) {
             google.maps.event.addListener(marker, 'click', function() {self.location.href = permalink;});
-            })(permalink);    
+            })(permalink); 
+            var flightPathCoords = [
+                { lat: @Model.Traveler.Lat.Value, lng: @Model.Traveler.Long.Value},
+                vacationPosition[i]
+            ];
+            flightPath = new google.maps.Polyline({
+                path: flightPathCoords,
+                geodesic: true,
+                strokeColor: '#0BE013',
+                strokeOpacity: 1.0,
+                strokeWeight: 1
+            });
+            flightPath.setMap(map);
         }
-        
+
         var options = {
             types: ['(cities)']
         }

@@ -28,7 +28,7 @@ namespace Travel_Planner.Controllers
         
         
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(TravelerPlacesViewModel travelerPlaces)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var traveler = await _repo.Traveler.GetTraveler(userId);
@@ -36,7 +36,6 @@ namespace Travel_Planner.Controllers
             {
                 return RedirectToAction("Create");
             }
-            TravelerPlacesViewModel travelerPlaces = new TravelerPlacesViewModel();
             travelerPlaces.Traveler = traveler;
             travelerPlaces.Vacations = await _repo.Vacation.GetVacations(traveler.Id);
             return View(travelerPlaces);
@@ -69,12 +68,9 @@ namespace Travel_Planner.Controllers
         // GET: Traveler/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var traveler = await _repo.Traveler.GetTraveler(userId);
 
-            var traveler = await _repo.Traveler.GetTraveler(id);
             if (traveler == null)
             {
                 return NotFound();
@@ -111,19 +107,12 @@ namespace Travel_Planner.Controllers
         }
 
         // GET: Traveler/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var traveler = await _repo.Traveler.GetTraveler(id);
-            if (traveler == null)
-            {
-                return NotFound();
-            }
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var traveler = await _repo.Traveler.GetTraveler(userId);
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", traveler.IdentityUserId);
+            ViewData["Interests"] = new SelectList(_context.Interests, "Name", "Name");
             return View(traveler);
         }
 
@@ -132,21 +121,16 @@ namespace Travel_Planner.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,StreetAddress,City,State,ZipCode,Lat,Long,IdentityUserId")] Traveler traveler)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,StreetAddress,City,State,ZipCode,InterestOne,InterestTwo,InterestThree,Lat,Long,IdentityUserId")] Traveler traveler)
         {
-            if (id != traveler.Id)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    traveler.IdentityUserId = userId;
                     _repo.Traveler.EditTraveler(traveler);
                     _repo.Save();
+                    return await SetLatLong(traveler);
                 }
                 catch (DbUpdateConcurrencyException)
                 {

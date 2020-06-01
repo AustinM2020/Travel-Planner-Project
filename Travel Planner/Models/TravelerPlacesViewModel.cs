@@ -18,6 +18,7 @@ namespace Travel_Planner.Models
         public Hotel Hotels { get; set; }
         public List<Excursion> Excursions { get; set; }
         public Flight Flight { get; set; }
+        public bool exists { get; set; }
 
     }
 }

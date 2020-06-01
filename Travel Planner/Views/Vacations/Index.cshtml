@@ -13,23 +13,20 @@
     }
 
     #markersA {
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         margin-right: 5px;
         background-color: lightgreen;
         border-color: none;
     }
 
     #markersB {
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         margin-right: 5px;
         margin-left: 5px;
     }
 
     #markersC {
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         margin-right: 5px;
         margin-left: 5px;
     }
@@ -107,7 +104,8 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1 id="Destination">@Model.Vacation.Destination <span> <a style="text-decoration:none; color:red; font-size:small;" asp-action="Delete" asp-route-id="@Model.Vacation.Id">Delete Vacation</a></span></h1>
+            <h1 id="Destination">@Model.Vacation.Destination <span><br /><a style="text-decoration:none; color:red; font-size:small; position:relative; bottom:20px;" asp-action="Delete" asp-route-id="@Model.Vacation.Id">Delete Vacation</a></span></h1>
+            <p style="position:relative; bottom:20px; margin-bottom:0;">@Model.Vacation.VacationStart.Value.ToShortDateString() - @Model.Vacation.VacationEnd.Value.ToShortDateString()</p>
         </div>
     </div>
 </div>

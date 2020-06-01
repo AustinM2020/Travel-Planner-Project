@@ -244,6 +244,27 @@ namespace Travel_Planner.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Flights",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Flights = table.Column<string>(nullable: true),
+                    Price = table.Column<string>(nullable: true),
+                    VacationId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Flights", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Flights_Vacations_VacationId",
+                        column: x => x.VacationId,
+                        principalTable: "Vacations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Hotels",
                 columns: table => new
                 {
@@ -273,7 +294,7 @@ namespace Travel_Planner.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "9155491c-845e-4bbc-a4fb-02f507b1b766", "5f0f6ddb-b6e6-4faa-b666-c449adffd548", "Traveler", "TRAVELER" });
+                values: new object[] { "57bce953-5ae6-45e2-9ab1-4dde3f0bb5d0", "11e5edbe-c429-42bb-9a86-702f6316c797", "Traveler", "TRAVELER" });
 
             migrationBuilder.InsertData(
                 table: "Interests",
@@ -335,6 +356,11 @@ namespace Travel_Planner.Migrations
                 column: "VacationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Flights_VacationId",
+                table: "Flights",
+                column: "VacationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Hotels_VacationId",
                 table: "Hotels",
                 column: "VacationId");
@@ -369,6 +395,9 @@ namespace Travel_Planner.Migrations
 
             migrationBuilder.DropTable(
                 name: "Excursions");
+
+            migrationBuilder.DropTable(
+                name: "Flights");
 
             migrationBuilder.DropTable(
                 name: "Hotels");

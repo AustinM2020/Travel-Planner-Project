@@ -152,13 +152,25 @@ namespace Travel_Planner.Controllers
        
         public async Task<IActionResult> Create(Vacation vacation)
         {
+            TravelerPlacesViewModel travelerPlaces = new TravelerPlacesViewModel();
+            bool exists;
             if (ModelState.IsValid)
             {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var traveler = await _repo.Traveler.GetTraveler(userId);
+                var vacations = await _repo.Vacation.GetVacations(traveler.Id);
+                var startDates = vacations.Select(v => v.VacationStart.Value).ToList();
+                if (startDates.Contains(vacation.VacationStart.Value))
+                {
+                    exists = true;
+                    travelerPlaces.exists = exists;
+                    return RedirectToAction("Index", "Traveler", travelerPlaces);
+                }
                 DestinationInfo info = await _destinationIdService.GetDestinationId(vacation);
                 vacation.DestinationId = info.data[0].result_object.location_id;
                 _repo.Vacation.CreateVacation(vacation);
                 _repo.Save();
-                return RedirectToAction("Index", "Traveler");
+                return RedirectToAction("Index", "Traveler", travelerPlaces);
             }
             ViewData["TravelerId"] = new SelectList(_context.Travelers, "Id", "Id", vacation.TravelerId);
             return RedirectToAction("Index", "Traveler");

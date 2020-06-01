@@ -10,7 +10,7 @@ using Travel_Planner.Data;
 namespace Travel_Planner.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200531235553_Initial")]
+    [Migration("20200601131051_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,8 +50,8 @@ namespace Travel_Planner.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9155491c-845e-4bbc-a4fb-02f507b1b766",
-                            ConcurrencyStamp = "5f0f6ddb-b6e6-4faa-b666-c449adffd548",
+                            Id = "57bce953-5ae6-45e2-9ab1-4dde3f0bb5d0",
+                            ConcurrencyStamp = "11e5edbe-c429-42bb-9a86-702f6316c797",
                             Name = "Traveler",
                             NormalizedName = "TRAVELER"
                         });
@@ -250,6 +250,29 @@ namespace Travel_Planner.Migrations
                     b.HasIndex("VacationId");
 
                     b.ToTable("Excursions");
+                });
+
+            modelBuilder.Entity("Travel_Planner.Models.Flight", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Flights")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Price")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VacationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VacationId");
+
+                    b.ToTable("Flights");
                 });
 
             modelBuilder.Entity("Travel_Planner.Models.Hotel", b =>
@@ -498,6 +521,15 @@ namespace Travel_Planner.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Travel_Planner.Models.Flight", b =>
+                {
+                    b.HasOne("Travel_Planner.Models.Vacation", "Vacation")
+                        .WithMany()
+                        .HasForeignKey("VacationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Travel_Planner.Models.Hotel", b =>
                 {
                     b.HasOne("Travel_Planner.Models.Vacation", "Vacation")
@@ -517,7 +549,7 @@ namespace Travel_Planner.Migrations
             modelBuilder.Entity("Travel_Planner.Models.Vacation", b =>
                 {
                     b.HasOne("Travel_Planner.Models.Traveler", "Traveler")
-                        .WithMany("Vacations")
+                        .WithMany()
                         .HasForeignKey("TravelerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
