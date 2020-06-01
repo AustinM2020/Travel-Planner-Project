@@ -119,9 +119,33 @@
 <div class="container">
     <div class="row">
         <div class="col-md-5">
-            <button class="btn btn" id="markersA" onclick="addMakersA()">@Model.Traveler.InterestOne</button>
-            <button class="btn btn-info" id="markersB" onclick="addMarkersB()">@Model.Traveler.InterestTwo</button>
-            <button class="btn btn-secondary" id="markersC" onclick="addMarkersC()">@Model.Traveler.InterestThree</button>
+            @if (Model.Traveler.InterestOne == "Local Attractions" || Model.Traveler.InterestOne == "Local Landmarks")
+            {
+                var interest = Model.Traveler.InterestOne.Split(" ");
+                <button class="btn btn" id="markersA" onclick="addMakersA()">@interest[1]</button>
+            }
+            else
+            {
+                <button class="btn btn" id="markersA" onclick="addMakersA()">@Model.Traveler.InterestOne</button>
+            }
+            @if (Model.Traveler.InterestTwo == "Local Attactions" || Model.Traveler.InterestTwo == "Local Landmarks")
+            {
+                var interest = Model.Traveler.InterestTwo.Split(" ");
+                <button class="btn btn-info" id="markersB" onclick="addMarkersB()">@interest[1]</button>
+            }
+            else
+            {
+                <button class="btn btn-info" id="markersB" onclick="addMarkersB()">@Model.Traveler.InterestTwo</button>
+            }
+            @if (Model.Traveler.InterestThree == "Local Attactions" || Model.Traveler.InterestThree == "Local Landmarks")
+            {
+                var interest = Model.Traveler.InterestThree.Split(" ");
+                <button class="btn btn-secondary" id="markersC" onclick="addMarkersC()">@interest[1]</button>
+            }
+            else
+            {
+                <button class="btn btn-secondary" id="markersC" onclick="addMarkersC()">@Model.Traveler.InterestThree</button>
+            }
             <div id="map"></div>
         </div>
         <div id="listAdd" class="col-md-7">
@@ -130,20 +154,63 @@
                 <ul>
                     @foreach (var item in Model.Excursions)
                     {
-                        <li style="margin-top: 10px; margin-bottom:10px;">@item.Name</li>
+                        if (item.Category != null)
+                        {
+                            if (Model.Traveler.InterestOne == item.Category)
+                            {
+                                @if (item.Category == "Local Attractions" || item.Category == "Local Landmarks")
+                                {
+                                    var interest = item.Category.Split(" ");
+                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: lightgreen">@interest[1]</span></li>
+                                }
+                                else
+                                {
+                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: lightgreen">@item.Category</span></li>
+                                }
+                            }
+                            else if (Model.Traveler.InterestTwo == item.Category)
+                            {
+                                @if (item.Category == "Local Attactions" || item.Category == "Local Landmarks")
+                                {
+                                    var interest = item.Category.Split(" ");
+                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: #6CC3D5">@interest[1]</span></li>
+                                }
+                                else
+                                {
+                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: #6CC3D5">@item.Category</span></li>
+                                }
+                            }
+                            else
+                            {
+                                @if (item.Category == "Local Attactions" || item.Category == "Local Landmarks")
+                                {
+                                    var interest = item.Category.Split(" ");
+                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: #F3969A">@interest[1]</span></li>
+                                }
+                                else
+                                {
+                                    <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance | <span style="color: #F3969A">@item.Category</span></li>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <li style="margin-top: 10px; margin-bottom:10px;">@item.Name | Priority: @item.Importance</li>
+                        }
                     }
                 </ul>
             </div>
             <form asp-action="addExcur" method="get">
-                <input type="hidden" value="@Model.Vacation.Id" />
+                <input type="hidden" name="vacationId" value="@Model.Vacation.Id" />
                 <div style="float:left; margin-right:10px;">
                     <label for="name">Add Activity</label>
-                    <input style="width: 200px;" class="form-control" name="name" />
+                    <input style="width: 200px;" class="form-control" id="name" name="name"/>
                 </div>
                 <div style="float:left; margin-right:10px;">
                     <label for="Importance">Importance</label>
                     <input type="number" style="width: 100px;" class="form-control" name="Importance" min="1" max="10" />
                 </div>
+                <input type="hidden" id="category" name="category"/>
                 <button style="margin-top: 30px;" type="submit" class="btn btn-warning">Add</button>
             </form>
         </div>
@@ -506,19 +573,28 @@
         var i;
         if (markersA.length == 0) {
             for (i = 0; i < placesOneTitles.length; i++) {
-                var permalink = `https://localhost:44350/Vacations/addExcur?name=${placesOneTitles[i]}&location=${placesOneLocations[i]}&vacationId=@Model.Vacation.Id`;
+                var name = `${placesOneTitles[i]}`;
+                var category = "@Model.Traveler.InterestOne";
                 var marker = new google.maps.Marker({
                     position: placesOneLocations[i],
                     title: placesOneTitles[i],
                     animation: google.maps.Animation.DROP,
-                    url: permalink,
                     icon: {
                         url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
                     }
                 });
                 (function(permalink) {
-                google.maps.event.addListener(marker, 'click', function() {self.location.href = permalink;});
-                })(permalink);    
+                    google.maps.event.addListener(marker, 'click', function ()
+                    {
+                        document.getElementById("name").value = permalink;
+                    });
+                })(name);
+                (function(permalink) {
+                    google.maps.event.addListener(marker, 'click', function ()
+                    {
+                        document.getElementById("category").value = permalink;
+                    });
+                })(category);
                 markersA.push(marker);
             }
         }
@@ -542,19 +618,28 @@
         var i;
         if (markersB.length == 0) {
             for (i = 0; i < placesTwoTitles.length; i++) {
-                var permalink = `https://localhost:44350/Vacations/addExcur?name=${placesTwoTitles[i]}&location=${placesTwoLocations[i]}&vacationId=@Model.Vacation.Id`;
+                var name = `${placesTwoTitles[i]}`;
+                var category = "@Model.Traveler.InterestTwo";
                 var marker = new google.maps.Marker({
                     position: placesTwoLocations[i],
                     title: placesTwoTitles[i],
                     animation: google.maps.Animation.DROP,
-                    url: permalink,
                     icon: {
                         url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
                     }
                 });
                 (function(permalink) {
-                google.maps.event.addListener(marker, 'click', function() {self.location.href = permalink;});
-                })(permalink);    
+                    google.maps.event.addListener(marker, 'click', function ()
+                    {
+                        document.getElementById("name").value = permalink;
+                    });
+                })(name);
+                (function(permalink) {
+                    google.maps.event.addListener(marker, 'click', function ()
+                    {
+                        document.getElementById("category").value = permalink;
+                    });
+                })(category);
                 markersB.push(marker);
             }
         }
@@ -578,19 +663,28 @@
         var i;
         if (markersC.length == 0) {
             for (i = 0; i < placesThreeTitles.length; i++) {
-                var permalink = `https://localhost:44350/Vacations/addExcur?name=${placesThreeTitles[i]}&location=${placesThreeLocations[i]}&vacationId=@Model.Vacation.Id`;
+                var name = `${placesThreeTitles[i]}`;
+                var category = "@Model.Traveler.InterestThree";
                 var marker = new google.maps.Marker({
                     position: placesThreeLocations[i],
                     title: placesThreeTitles[i],
                     animation: google.maps.Animation.DROP,
-                    url: permalink,
                     icon: {
                         url: "http://maps.google.com/mapfiles/ms/icons/pink-dot.png"
                     }
                 });
                 (function(permalink) {
-                google.maps.event.addListener(marker, 'click', function() {self.location.href = permalink;});
-                })(permalink);
+                    google.maps.event.addListener(marker, 'click', function ()
+                    {
+                        document.getElementById("name").value = permalink;
+                    });
+                })(name);
+                (function(permalink) {
+                    google.maps.event.addListener(marker, 'click', function ()
+                    {
+                        document.getElementById("category").value = permalink;
+                    });
+                })(category);
                 markersC.push(marker);
             }
         }
@@ -795,53 +889,5 @@
         });
         setTimeout(function() { getFlights(origin, destination, departDate, returnDate, adults); }, 1000);
     }
-    function getWeather() {
-        var settings = {
-	        "async": true,
-	        "crossDomain": true,
-	        "url": "https://api.openweathermap.org/data/2.5/onecall?lat=@Model.Vacation.Lat&lon=@Model.Vacation.Long&units=imperial&appid=@APIkeys.weatherApi",
-	        "method": "GET",
-        }
-
-        $.ajax(settings).done(function (response) {
-            console.log(response);
-            displayWeather(response);
-        });
-    }
-    function displayWeather(response) {
-        document.getElementById('tempToday').innerHTML = `Temp:${response.daily[0].temp.day}`;
-        document.getElementById('conToday').innerHTML = response.daily[0].weather[0].description;
-        var time1 = response.daily[1].dt;
-        var date1 = new Date(0);
-        document.getElementById('day1').innerHTML = date1.setUTCSeconds(time1);
-        document.getElementById('day1Temp').innerHTML = `Temp:${response.daily[1].temp.day}`;
-        document.getElementById('day1Con').innerHTML = response.daily[1].weather[0].description;
-        var time1 = response.daily[2].dt;
-        var date1 = new Date(0);
-        document.getElementById('day2').innerHTML = date1.setUTCSeconds(time1);
-        document.getElementById('day2Temp').innerHTML = `Temp:${response.daily[2].temp.day}`;
-        document.getElementById('day2Con').innerHTML = response.daily[2].weather[0].description;
-        var time1 = response.daily[3].dt;
-        var date1 = new Date(0);
-        document.getElementById('day3').innerHTML = date1.setUTCSeconds(time1);
-        document.getElementById('day3Temp').innerHTML = `Temp:${response.daily[3].temp.day}`;
-        document.getElementById('day3Con').innerHTML = response.daily[3].weather[0].description;
-        var time1 = response.daily[4].dt;
-        var date1 = new Date(0);
-        document.getElementById('day4').innerHTML = date1.setUTCSeconds(time1);
-        document.getElementById('day4Temp').innerHTML = `Temp:${response.daily[4].temp.day}`;
-        document.getElementById('day4Con').innerHTML = response.daily[4].weather[0].description;
-        var time1 = response.daily[5].dt;
-        var date1 = new Date(0);
-        document.getElementById('day5').innerHTML = date1.setUTCSeconds(time1);
-        document.getElementById('day5Temp').innerHTML = `Temp:${response.daily[5].temp.day}`;
-        document.getElementById('day5Con').innerHTML = response.daily[5].weather[0].description;
-        var time1 = response.daily[6].dt;
-        var date1 = new Date(0);
-        document.getElementById('day6').innerHTML = date1.setUTCSeconds(time1);
-        document.getElementById('day6Temp').innerHTML = `Temp:${response.daily[6].temp.day}`;
-        document.getElementById('day6Con').innerHTML = response.daily[6].weather[0].description;
-    }
-    window.onload = getWeather;
 </script>
         <script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>

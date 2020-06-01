@@ -13,9 +13,7 @@ namespace Travel_Planner.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public int Importance { get; set; }
-        public DateTime? Date { get; set; }
-        public double? Lat { get; set; }
-        public double? Long { get; set; }
+        public string Category { get; set; }
 
         [ForeignKey("Vacation")]
         public int VacationId { get; set; }

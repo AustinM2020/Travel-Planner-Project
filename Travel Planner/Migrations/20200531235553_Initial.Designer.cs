@@ -10,7 +10,7 @@ using Travel_Planner.Data;
 namespace Travel_Planner.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200530042900_Initial")]
+    [Migration("20200531235553_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,8 +50,8 @@ namespace Travel_Planner.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bffd0447-247f-4185-944d-5566582394ba",
-                            ConcurrencyStamp = "42a83c90-1edb-4146-ac0b-85eaf5598818",
+                            Id = "9155491c-845e-4bbc-a4fb-02f507b1b766",
+                            ConcurrencyStamp = "5f0f6ddb-b6e6-4faa-b666-c449adffd548",
                             Name = "Traveler",
                             NormalizedName = "TRAVELER"
                         });
@@ -233,17 +233,11 @@ namespace Travel_Planner.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Importance")
                         .HasColumnType("int");
-
-                    b.Property<double?>("Lat")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("Long")
-                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
