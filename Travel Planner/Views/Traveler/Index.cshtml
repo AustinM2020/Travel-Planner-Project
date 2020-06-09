@@ -326,7 +326,8 @@
             });
             (function(permalink) {
             google.maps.event.addListener(marker, 'click', function() {self.location.href = permalink;});
-            })(permalink); 
+            })(permalink);
+            
             var flightPathCoords = [
                 { lat: @Model.Traveler.Lat.Value, lng: @Model.Traveler.Long.Value},
                 vacationPosition[i]
