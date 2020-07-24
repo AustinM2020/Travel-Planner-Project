@@ -109,7 +109,10 @@
         </div>
     </div>
 </div>
-
+<div>
+    <input id="placeInput" type="text" />
+    <button onclick="addMarkers()">Search</button>
+</div>
 <div class="container">
     <div class="row">
         <div class="col-md-5">
@@ -360,27 +363,6 @@
     </div>
 </div>
 <script>
-    var placesOneLocations = [];
-    var placesTwoLocations = [];
-    var placesThreeLocations = [];
-    var placesOneTitles = [];
-    var placesTwoTitles = [];
-    var placesThreeTitles = [];
-    @for(int i = 0; i < Model.PlacesOne.results.Length; i++)
-    {
-        @:placesOneLocations.push({ lat: @Model.PlacesOne.results[i].geometry.location.lat, lng: @Model.PlacesOne.results[i].geometry.location.lng});
-        @:placesOneTitles.push('@Model.PlacesOne.results[i].name');
-    }
-    @for(int i = 0; i < Model.PlacesTwo.results.Length; i++)
-    {
-        @:placesTwoLocations.push({ lat: @Model.PlacesTwo.results[i].geometry.location.lat, lng: @Model.PlacesTwo.results[i].geometry.location.lng});
-        @:placesTwoTitles.push('@Model.PlacesTwo.results[i].name');
-    }
-    @for(int i = 0; i < Model.PlacesThree.results.Length; i++)
-    {
-        @:placesThreeLocations.push({ lat: @Model.PlacesThree.results[i].geometry.location.lat, lng: @Model.PlacesThree.results[i].geometry.location.lng});
-        @:placesThreeTitles.push('@Model.PlacesThree.results[i].name');
-    }
     var map;
     var center = { lat: @Model.Vacation.Lat.Value, lng: @Model.Vacation.Long.Value };
     var worldBounds = {
@@ -598,6 +580,23 @@
                     }
                 ]
         });
+    }
+    function addMarkers() {
+        var place = document.getElementById("placeInput").value;
+        console.log(place)
+        var settings = {
+            "type": "GET",
+            "async": true,
+            "crossDomain": true,
+            "url": `https://maps.googleapis.com/maps/api/place/textsearch/json?query=parks+in+Paris&key=@APIkeys.googleApi`,
+            "headers": {
+                "Access-Control-Allow-Origin": "https://localhost:44350",
+                "Access-Control-Allow-Origin": "GET"
+	        }
+        }
+        $.ajax(settings).done(function (response) {
+            console.log(response);
+        })
     }
     var markersA = [];
     var markersB = [];
@@ -955,4 +954,4 @@
         setTimeout(function() { getFlights(origin, destination, departDate, returnDate, adults); }, 1000);
     }
 </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>

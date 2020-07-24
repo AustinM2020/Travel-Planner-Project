@@ -48,8 +48,8 @@ namespace Travel_Planner.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "57bce953-5ae6-45e2-9ab1-4dde3f0bb5d0",
-                            ConcurrencyStamp = "11e5edbe-c429-42bb-9a86-702f6316c797",
+                            Id = "238fbc02-2a6f-40f5-8ddb-d8f3034748cd",
+                            ConcurrencyStamp = "2163692d-e72b-4d9d-9c48-f2410739be06",
                             Name = "Traveler",
                             NormalizedName = "TRAVELER"
                         });

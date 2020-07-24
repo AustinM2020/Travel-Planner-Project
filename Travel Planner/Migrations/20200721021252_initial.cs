@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Travel_Planner.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -294,7 +294,7 @@ namespace Travel_Planner.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "57bce953-5ae6-45e2-9ab1-4dde3f0bb5d0", "11e5edbe-c429-42bb-9a86-702f6316c797", "Traveler", "TRAVELER" });
+                values: new object[] { "238fbc02-2a6f-40f5-8ddb-d8f3034748cd", "2163692d-e72b-4d9d-9c48-f2410739be06", "Traveler", "TRAVELER" });
 
             migrationBuilder.InsertData(
                 table: "Interests",
