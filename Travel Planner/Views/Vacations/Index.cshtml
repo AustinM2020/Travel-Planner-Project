@@ -111,7 +111,7 @@
 </div>
 <div>
     <input id="placeInput" type="text" />
-    <button onclick="addMarkers()">Search</button>
+    <button onclick="getPlaces()">Search</button>
 </div>
 <div class="container">
     <div class="row">
@@ -364,6 +364,8 @@
 </div>
 <script>
     var map;
+    var service;
+    var infowindow;
     var center = { lat: @Model.Vacation.Lat.Value, lng: @Model.Vacation.Long.Value };
     var worldBounds = {
         north: 85,
@@ -580,24 +582,44 @@
                     }
                 ]
         });
+
+       
     }
-    function addMarkers() {
-        var place = document.getElementById("placeInput").value;
+
+
+    function getPlaces() {
+        console.log(document.getElementById("placeInput").value)
+        var request = {
+        location: center,
+        radius: '500',
+        type: [document.getElementById("placeInput").value]
+        };
+
+        service = new google.maps.places.PlacesService(map);
+        service.nearbySearch(request, createMarker);
+    }
+    function createMarker(place) {
         console.log(place)
-        var settings = {
-            "type": "GET",
-            "async": true,
-            "crossDomain": true,
-            "url": `https://maps.googleapis.com/maps/api/place/textsearch/json?query=parks+in+Paris&key=@APIkeys.googleApi`,
-            "headers": {
-                "Access-Control-Allow-Origin": "https://localhost:44350",
-                "Access-Control-Allow-Origin": "GET"
-	        }
+        infowindow = new google.maps.InfoWindow();
+        for (let i = 0; i < place.length; i++) {
+            var name = place[i].name;
+            var marker = new google.maps.Marker({
+                map,
+                position: place[i].geometry.location,
+                title: name,
+                animation: google.maps.Animation.DROP,
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                }
+            });
+            (function (permalink) {
+                google.maps.event.addListener(marker, 'click', function () {
+                    document.getElementById("name").value = permalink;
+                });
+            })(name);
         }
-        $.ajax(settings).done(function (response) {
-            console.log(response);
-        })
     }
+
     var markersA = [];
     var markersB = [];
     var markersC = [];
@@ -954,4 +976,4 @@
         setTimeout(function() { getFlights(origin, destination, departDate, returnDate, adults); }, 1000);
     }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>
