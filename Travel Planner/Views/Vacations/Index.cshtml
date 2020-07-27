@@ -585,22 +585,27 @@
 
        
     }
-
-
+    var markers = [];
+    var input;
     function getPlaces() {
-        console.log(document.getElementById("placeInput").value)
+        clearMarkers(map);
+        var input = document.getElementById("placeInput").value;
+        if (input[input.length - 1] == "s" || input[input.length - 1] == "S") {
+            input = input.substring(0, input.length - 1)
+        }
+        console.log(input)
         var request = {
         location: center,
         radius: '500',
-        type: [document.getElementById("placeInput").value]
+        type: [input]
         };
 
         service = new google.maps.places.PlacesService(map);
         service.nearbySearch(request, createMarker);
     }
+
     function createMarker(place) {
         console.log(place)
-        infowindow = new google.maps.InfoWindow();
         for (let i = 0; i < place.length; i++) {
             var name = place[i].name;
             var marker = new google.maps.Marker({
@@ -617,8 +622,18 @@
                     document.getElementById("name").value = permalink;
                 });
             })(name);
+
+            markers.push(marker);
         }
     }
+
+    function clearMarkers(map) {
+        console.log(markers)
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+    }
+
 
     var markersA = [];
     var markersB = [];
@@ -976,4 +991,5 @@
         setTimeout(function() { getFlights(origin, destination, departDate, returnDate, adults); }, 1000);
     }
 </script>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap" async defer></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=@APIkeys.googleApi&libraries=places&callback=initMap"></script>
+
